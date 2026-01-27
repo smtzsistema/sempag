@@ -267,7 +267,6 @@ sempag/
 │  ├─Unit/
 │  │  └─ ExampleTest.php
 │  └─ TestCase.php
-
 ├─vendor/
 │  ├─bin/
 │  ├─brick/
@@ -326,14 +325,254 @@ sempag/
 └─ vite.config.js
 
 
-
-
-
-
-
-
-
-
-
 estutura sql
-└─ ainda em desenvolvimento
+sempag
+├─ cache
+│  ├─ key
+│  ├─ value
+│  └─ expiration
+├─ cache_locks
+│  ├─ key
+│  ├─ owner
+│  └─ expiration
+├─ failed_jobs
+│  ├─ id
+│  ├─ uuid
+│  ├─ connection
+│  ├─ queue
+│  ├─ payload
+│  ├─ exception
+│  └─ failed_at
+├─ jobs
+│  ├─ id
+│  ├─ queue
+│  ├─ payload
+│  ├─ attempts
+│  ├─ reserved_at
+│  ├─ available_at
+│  └─ created_at
+├─ jobs_batches
+│  ├─ id
+│  ├─ name
+│  ├─ total_jobs
+│  ├─ pending_jobs
+│  ├─ failed_jobs
+│  ├─ failed_job_ids
+│  ├─ options
+│  ├─ cancelled_at
+│  ├─ created_at
+│  └─ finished_at
+├─ migrations
+│  ├─ id
+│  ├─ migration
+│  └─ batch
+├─ password_reset_tokens
+│  ├─ email
+│  ├─ token
+│  └─ created_at
+├─ tbl_cartas
+│  ├─ car_id
+│  ├─ eve_id
+│  ├─ car_descricao
+│  ├─ car_assunto
+│  ├─ car_texto
+│  ├─ cat_id
+│  ├─ car_copiac
+│  ├─ car_responderto
+│  ├─ car_copia
+│  ├─ car_tipo
+│  ├─ car_trad
+│  ├─ created_at
+│  └─ updated_at
+├─ tbl_categorias
+│  ├─ cat_id
+│  ├─ eve_id
+│  ├─ cat_nome
+│  ├─ cat_descricao
+│  ├─ cat_date_start
+│  ├─ cat_date_end
+│  ├─ cat_banner_path
+│  ├─ cat_ativo
+│  ├─ cat_aprova
+│  ├─ cat_settings
+│  ├─ created_at
+│  └─ updated_at
+├─ tbl_credencial
+│  ├─ cre_id
+│  ├─ eve_id
+│  ├─ cre_nome
+│  ├─ cre_tipo
+│  ├─ cat_id
+│  ├─ cre_fundo
+│  ├─ cre_espelhar
+│  ├─ cre_config
+│  ├─ created_at
+│  └─ updated_at
+├─ tbl_eventos
+│  ├─ eve_id
+│  ├─ org_id
+│  ├─ eve_nome
+│  ├─ eve_slug
+│  ├─ eve_descricao
+│  ├─ eve_token
+│  ├─ eve_data_inicio
+│  ├─ eve_data_fim
+│  ├─ eve_local
+│  ├─ eve_banner
+│  ├─ eve_fundo
+│  ├─ created_at
+│  └─ updated_at
+├─ tbl_eventos_usuarios
+│  ├─ eusu_id
+│  ├─ eve_id
+│  ├─ usu_id
+│  ├─ created_at
+│  └─ updated_at
+├─ tbl_ficha
+│  ├─ fic_id
+│  ├─ form_id
+│  ├─ fic_nome
+│  ├─ fic_label
+│  ├─ fic_tipo
+│  ├─ fic_obrigatorio
+│  ├─ fic_ordem
+│  ├─ fic_opcoes
+│  ├─ fic_validacoes
+│  ├─ fic_placeholder
+│  ├─ fic_help_text
+│  ├─ fic_visible_if
+│  ├─ fic_edita
+│  ├─ ficg_id
+│  ├─ created_at
+│  ├─ updated_at
+│  └─ deleted_at
+├─ tbl_ficha_campos
+│  ├─ ficg_id
+│  ├─ ficg_group
+│  ├─ fic_nome
+│  ├─ fic_label
+│  ├─ fic_tipo
+│  ├─ fic_opcoes
+│  ├─ fic_validacoes
+│  ├─ fic_placeholder
+│  ├─ fic_help_text
+│  ├─ fic_obrigatorio
+│  ├─ created_at
+│  └─ updated_at
+├─ tbl_formularios
+│  ├─ form_id
+│  ├─ eve_id
+│  ├─ cat_id
+│  ├─ form_nome
+│  ├─ form_versao
+│  ├─ form_ativo
+│  ├─ created_at
+│  └─ updated_at
+├─ tbl_isncricao
+│  ├─ ins_id
+│  ├─ eve_id
+│  ├─ cat_id
+│  ├─ form_id
+│  ├─ usu_id
+│  ├─ ins_nome
+│  ├─ ins_sobrenome
+│  ├─ ins_nomecracha
+│  ├─ ins_email
+│  ├─ ins_senha
+│  ├─ ins_cpf
+│  ├─ ins_cnpj
+│  ├─ ins_tel_celular
+│  ├─ ins_tel_comercial
+│  ├─ ins_instituicao
+│  ├─ ins_siglainstituicao
+│  ├─ ins_cargo
+│  ├─ ins_cargo_cred
+│  ├─ ins_observacao
+│  ├─ ins_cep
+│  ├─ ins_endereco
+│  ├─ ins_numero
+│  ├─ ins_complemento
+│  ├─ ins_bairro
+│  ├─ ins_cidade
+│  ├─ ins_estado
+│  ├─ ins_pais
+│  ├─ ins_adicional1
+│  ├─ ...
+│  ├─ ins_adicional30
+│  ├─ ins_dados
+│  ├─ ins_token
+│  ├─ ins_aprovado
+│  ├─ ins_aprovado_data
+│  ├─ ins_motivo
+│  ├─ ins_confirmacao_assunto
+│  ├─ ins_confirmacao_html
+│  ├─ created_at
+│  └─ updated_at
+├─ tbl_isncricao_logs
+│  ├─ log_id
+│  ├─ ins_id
+│  ├─ eve_id
+│  ├─ actor_type
+│  ├─ actor_usu_id
+│  ├─ changes
+│  ├─ ip
+│  ├─ user_agent
+│  ├─ created_at
+│  └─ updated_at
+├─ tbl_isncricao_respostas
+│  ├─ res_id
+│  ├─ ins_id
+│  ├─ fic_id
+│  ├─ eve_id
+│  ├─ res_valor_texto
+│  ├─ res_valor_json
+│  ├─ created_at
+│  └─ updated_at
+├─tbl_model_has_permissions
+│  ├─ permission_id
+│  ├─ model_type
+│  └─ model_id
+├─tbl_model_has_role
+│  ├─ role_id
+│  ├─ model_type
+│  └─ model_id
+├─ tbl_organizadoras
+│  ├─ org_id
+│  ├─ usu_id
+│  ├─ org_nome
+│  ├─ created_at
+│  └─ updated_at
+├─ tbl_permissions
+│  ├─ id
+│  ├─ name
+│  ├─ perm_label
+│  ├─ perm_desc
+│  ├─ guard_name
+│  ├─ created_at
+│  └─ updated_at
+
+├─ tbl_roles
+│  ├─ id
+│  ├─ name
+│  ├─ guard_name
+│  ├─ created_at
+│  └─ updated_at
+├─ tbl_role_has_permissions
+│  ├─ permission_id
+│  └─ role_id
+├─ tbl_sessions
+│  ├─ id
+│  ├─ user_id
+│  ├─ ip_address
+│  ├─ user_agent
+│  ├─ payload
+│  └─ last_activity
+└─ tbl_usuarios
+   ├─ usu_id
+   ├─ usu_nome
+   ├─ usu_email
+   ├─ usu_email_verified_at
+   ├─ usu_password
+   ├─ remember_token
+   ├─ created_at
+   └─ updated_at
