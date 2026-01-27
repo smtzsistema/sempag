@@ -40,5 +40,5 @@ cmd /c mklink /J public\storage storage\app\public
 
 ASSIM PODENDO ACESSAR O SISTEMA EM:
 
-http://127.0.0.1:8000/e/demo20252/
-http://127.0.0.1:8000/e/demo20252/admin
+http://127.0.0.1:8000/e/demo2025/
+http://127.0.0.1:8000/e/demo2025/admin
