@@ -1,5 +1,5 @@
 Estrutura de pastas
-inscricoes/
+sempag/
 ├─.github/
 │  └─workflows/
 │     ├─ issues.yml
@@ -10,32 +10,57 @@ inscricoes/
 │  └─Http/
 │     ├─Controllers/
 │     │  ├─Admin/
+│     │  │  ├─System/
+│     │  │  │   ├─ CategoryAdminController.php
+│     │  │  │   ├─ CredentialsAdminController.php
+│     │  │  │   ├─ EventAdminController.php
+│     │  │  │   ├─ FormAdminController.php
+│     │  │  │   ├─ FormFieldAdminController.php
+│     │  │  │   ├─ LettersAdminController.php
+│     │  │  │   ├─ LetterTemplateController.php
+│     │  │  │   └─ RoleAdminController.php
 │     │  │  ├─ AdminAuthController.php
+│     │  │  ├─ AttendanceController.php
 │     │  │  ├─ DashboardController.php
-│     │  │  └─ RegistrationAdminController.php
+│     │  │  ├─ RegistrationAdminController.php
+│     │  │  ├─ RegistrationExportController.php
+│     │  │  ├─ StatsController.php
+│     │  │  ├─ SyncController.php
+│     │  │  └─ UserAdminController.php
 │     │  ├─Api/
-│     │  │  └─ api_cnpj.php
+│     │  │  ├─ api_cnpj.php
+│     │  │  └─ CnpjController.php
 │     │  ├─Public/
 │     │  │  ├─ AttendeeAccessController.php
 │     │  │  ├─ AttendeeAreaController.php
 │     │  │  ├─ AttendeeAuthController.php
+│     │  │  ├─ AttendeeCredentialController.php
 │     │  │  ├─ EventPublicController.php
 │     │  │  └─ RegistrationController.php
 │     │  └─ Controller.php
 │     ├─Middleware/
 │     │  ├─ AdminEventAuth.php
 │     │  └─ AttendeeAuth.php
-│     └─Models/
-│        ├─ Category.php
-│        ├─ Event.php
-│        ├─ Form.php
-│        ├─ FormField.php
-│        ├─ Organizer.php
-│        ├─ Registration.php
-│        ├─ RegistrationAnswer.php
-│        ├─ User.php
-│        ├─Providers/
-│        └─ AppServiceProvider.php
+│     ├─Models/
+│     │  ├─ Category.php
+│     │  ├─ Credential.php
+│     │  ├─ Event.php
+│     │  ├─ FieldPreset.php
+│     │  ├─ Form.php
+│     │  ├─ FormField.php
+│     │  ├─ Letter.php
+│     │  ├─ Organizer.php
+│     │  ├─ Permission.php
+│     │  ├─ Registration.php
+│     │  ├─ RegistrationAnswer.php
+│     │  ├─ RegistrationLog.php
+│     │  ├─ Role.php
+│     │  └─ User.php
+│     ├─Providers/
+│     │  └─ AppServiceProvider.php
+│     └─Support/
+│        ├─ helpers.php
+│        └─ RegistrationAudit.php
 ├─bootstrap/
 │  ├─cache/
 │  │  ├─ .gitignore
@@ -51,6 +76,7 @@ inscricoes/
 │  ├─ filesystems.php
 │  ├─ logging.php
 │  ├─ mail.php
+│  ├─ permission.php
 │  ├─ queue.php
 │  ├─ services.php
 │  └─ session.php
@@ -65,18 +91,39 @@ inscricoes/
 │  │  ├─ 2025_12_29_185829_create_events_table.php
 │  │  ├─ 2025_12_29_185835_create_categories_table.php
 │  │  ├─ 2025_12_29_185839_create_forms_table.php
+│  │  ├─ 2025_12_29_185842_create_field_presets_table.php
 │  │  ├─ 2025_12_29_185843_create_form_fields_table.php
 │  │  ├─ 2025_12_29_185846_create_registrations_table.php
 │  │  ├─ 2025_12_29_185849_create_registration_answers_table.php
 │  │  ├─ 2026_01_05_150411_add_attendee_auth_and_confirmation_to_registrations_table.php
-│  │  ├─ 2026_01_05_154443_add_password_and_confirmation_to_registrations_table.php
-│  │  └─ 2026_01_05_174838_add_editable_by_attendee_to_form_fields_table.php
+│  │  ├─ 2026_01_09_170704_add_fic_validacoes_to_tbl_ficha_campos_table.php
+│  │  ├─ 2026_01_19_170000_create_registration_logs_table.php
+│  │  ├─ 2026_01_20_220000_create_letters_table.php
+│  │  ├─ 2026_01_23_000000_create_permission_tables.php
+│  │  ├─ 2026_01_23_000010_create_event_users_table.php
+│  │  ├─ 2026_01_23_170123_add_meta_to_permissions_table.php
+│  │  └─ 2026_01_26_160000_create_credentials_table.php
 │  ├─seeders/
+│  │  ├─ CredentialDefaultSeeder.php
 │  │  ├─ DatabaseSeeder.php
-│  │  └─ DemoSeeder.php
-│  ├─ .gitignore
-│  └─ database.sqlite
+│  │  ├─ DemoSeeder.php
+│  │  ├─ FieldPresetSeeder.php
+│  │  ├─ LetterDefaultSeeder.php
+│  │  ├─ RbacSeeder.php
+│  │  └─ StartAssetsSeeder.php
+│  └─ .gitignore
 ├─public/
+│  ├─storage/
+│  │  ├─Aqui ficam salvo com o token por evento (demo2025)
+│  │  │  ├─banner/
+│  │  │  │   └─ Aqui ficam salvos os banners por evento
+│  │  │  ├─categorias/
+│  │  │  │   └─Aqui ficam salvos as pastas dos banners separados por categorias/
+│  │  │  │        └─ Aqui ficam salvos os banners por categoria
+│  │  │  └─credenciais/
+│  │  │      └─Aqui ficam salvos as credencias
+│  │  ├─ .gitnore 
+│  │  └─ .gitkeep
 │  ├─ .htaccess
 │  ├─ favicon.ico
 │  ├─ index.php
@@ -87,18 +134,87 @@ inscricoes/
 │  ├─js/
 │  │  ├─ app.js
 │  │  └─ bootstrap.js
+│  ├─start/
+│  │  └─demo2025/
+│  │     ├─banner/
+│  │     │  ├─ mmm0nwZfmJ83AhlScz3JmT26T3oeiP9IjIjEfY8W.png
+│  │     │  └─ zUJfTv2NGMouVKxrLPWqNWOjO5vkcq9I8GUChVG0.png
+│  │     ├─categorias/
+│  │     │  └─1/
+│  │     │      └─banner/
+│  │     │          └─ DZea9fU9g3dI5thTFabFd4cigKQsvaBRDlHcUzlH.png
+│  │     └─credenciais/
+│  │        └─ uhEp5nvONKxk26Vrn1TXAnMMUSUcSbhfhBeWF3eY.jpg
 │  └─views/
 │     ├─admin/
+│     │  ├─attendance/
+│     │  │  └─ index.blade.php
 │     │  ├─auth/
 │     │  │  └─ login.blade.php
-│     │  │  ├─registrations/
-│     │  │  │  ├─ index.blade.php
-│     │  │  │  └─ show.blade.php
-│     │  │  └─ dashboard.blade.php
+│     │  ├─event/
+│     │  │  ├─ edit.blade.php
+│     │  │  └─ index.blade.php
+│     │  ├─inscricoes/
+│     │  │  └─exports/
+│     │  │      ├─ by_category.blade.php
+│     │  │      ├─ by_status.blade.php
+│     │  │      ├─ filtered.blade.php
+│     │  │      └─ index.blade.php
+│     │  ├─layouts/
+│     │  │  └─ app.blade.php
+│     │  ├─partials/
+│     │  │  └─ flash.blade.php
+│     │  ├─registrations/
+│     │  │  ├─ edit.blade.php
+│     │  │  ├─ export_modal.blade.php
+│     │  │  ├─ index.blade.php
+│     │  │  ├─ search.blade.php
+│     │  │  └─ show.blade.php
+│     │  ├─roles/
+│     │  │  ├─ form.blade.php
+│     │  │  └─ index.blade.php
+│     │  ├─stats/
+│     │  │  └─ index.blade.php
+│     │  ├─sync/
+│     │  │  └─ index.blade.php
+│     │  ├─system/
+│     │  │  ├─categories/
+│     │  │  │  ├─ create.blade.php
+│     │  │  │  ├─ edit.blade.php
+│     │  │  │  └─ index.blade.php
+│     │  │  ├─credentials/
+│     │  │  │  ├─ a4.blade.php
+│     │  │  │  ├─ create.blade.php
+│     │  │  │  └─ index.blade.php
+│     │  │  ├─form_fields/
+│     │  │  │   ├─partials/
+│     │  │  │   │   ├─ form.blade.php
+│     │  │  │   │   └─ preview.blade.php
+│     │  │  │   ├─ create.blade.php
+│     │  │  │   ├─ edit.blade.php
+│     │  │  │   └─ index.blade.php
+│     │  │  ├─forms/
+│     │  │  │  ├─ create.blade.php
+│     │  │  │  ├─ edit.blade.php
+│     │  │  │  └─ index.blade.php
+│     │  │  ├─letters/
+│     │  │  │   ├─partials/
+│     │  │  │   │   └─ form.blade.php
+│     │  │  │   ├─ create.blade.php
+│     │  │  │   ├─ edit.blade.php
+│     │  │  │   └─ index.blade.php
+│     │  │  ├─users/
+│     │  │  ├─ create.blade.php
+│     │  │  ├─ form.blade.php
+│     │  │  └─ index.blade.php
+│     │  └─ dashboard.blade.php
 │     ├─emails/
 │     │  └─ registration_confirmation.blade.php
 │     ├─public/
 │     │  ├─attendee/
+│     │  │   ├─credentials/
+│     │  │   │  ├─ choose.blade.php
+│     │  │   │  └─ print.blade.php
 │     │  │   ├─ area.blade.php
 │     │  │   ├─ edit.blade.php
 │     │  │   ├─ forgot.blade.php
@@ -114,15 +230,22 @@ inscricoes/
 │     │      └─ form.blade.php
 │     └─ welcome.blade.php
 ├─routes/
+│  ├─ api.php
 │  ├─ console.php
 │  └─ web.php
 ├─storage/
 │  ├─app/
-│  │  ├─private/
-│  │  │  └─ .gitignore
 │  │  ├─public/
-│  │  │  └─ .gitignore
-│  │  └─ .gitignore
+│  │  ├─demo2025
+│  │  │  ├─banner/
+│  │  │  │   └─ Aqui ficam salvos os banners por evento
+│  │  │  ├─categorias/
+│  │  │  │    └─Aqui ficam salvos as pastas dos banners separados por categorias/
+│  │  │  │         └─ Aqui ficam salvos os banners por categoria
+│  │  │  └─credenciais/
+│  │  │     └─ Aqui ficam salvas as credenciais por evento
+│  │  ├─ .gitignore
+│  │  └─ .gitkeep
 │  ├─framework/
 │  │  ├─cache/
 │  │  │  ├─data/
@@ -134,21 +257,17 @@ inscricoes/
 │  │  │  └─ .gitignore
 │  │  ├─views/
 │  │  │  ├─ .gitignore
-│  │  │  ├─ 48cabacea05c7773bbf9b046b0ac906e.php
-│  │  │  ├─ 52447ca9d460e175c164d071f420019b.php
-│  │  │  ├─ a5b68fa7647190f56e3e6435719d6520.php
-│  │  │  ├─ b9da71d19480ab9a9e2c338068d7d028.php
-│  │  │  └─ dd47164ffd771e988d4bb4a1d083d26d.php
+│  │  │  └─ {{nome_das_views_criptografadas}}.php
 │  │  └─.gitignore
 │  └─logs/
-│     ├─ .gitignore
-│     └─ laravel.log
+│     └─ .gitignore
 ├─tests/
 │  ├─Feature/
 │  │  └─ ExampleTest.php
 │  ├─Unit/
 │  │  └─ ExampleTest.php
 │  └─ TestCase.php
+
 ├─vendor/
 │  ├─bin/
 │  ├─brick/
@@ -181,6 +300,7 @@ inscricoes/
 │  ├─ralouphie/
 │  ├─ramsey/
 │  ├─sebastian/
+│  ├─spatie/
 │  ├─staabm/
 │  ├─symfony/
 │  ├─theseer/
@@ -201,8 +321,12 @@ inscricoes/
 ├─ package.json
 ├─ phpunit.xml
 ├─ README.md
-├─ strutured_real.md (esse arquivo)
+├─ README.txt
+├─ strutured_real.md
 └─ vite.config.js
+
+
+
 
 
 
