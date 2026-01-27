@@ -18,6 +18,10 @@ php artisan db:seed --force
 
 ///////////////////////////
 
+UTILIZANDO O LARAGON BASTA INICAR O APACHE E O MYSQL E NO POWER SHELL RODAR:
+
+php artisan serve
+
 SE CASO TIVER PROBLEMAS COM IMAGENS NÃO CARREGANDO É POR CONTA DE PERMISSÕES EM PASTAS NORMALMENTE GERA UM ERRO 403 RODE ESSE COMANDO NO POWERSHELL:
 
 
@@ -26,9 +30,6 @@ cmd /c mklink /J public\storage storage\app\public
 
 ///////////////////////////
 
-UTILIZANDO O LARAGON BASTA INICAR O APACHE E O MYSQL E NO POWER SHER RODAR:
-
-php artisan serve
 
 ASSIM PODENDO ACESSAR O SISTEMA EM:
 
