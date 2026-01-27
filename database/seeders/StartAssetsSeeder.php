@@ -9,8 +9,8 @@ class StartAssetsSeeder extends Seeder
 {
     public function run(): void
     {
-        $src = resource_path('start/demo20252');
-        $dst = storage_path('app/public/demo20252');
+        $src = resource_path('start/demo2025');
+        $dst = storage_path('app/public/demo2025');
 
         if (!File::exists($src)) {
             $this->command?->warn("Start assets não encontrados em: {$src}");

@@ -32,13 +32,13 @@ class DemoSeeder extends Seeder
         );
 
         $event = Event::firstOrCreate(
-            ['eve_token' => 'demo20252'],
+            ['eve_token' => 'demo2025'],
             [
                 'org_id' => $organizer->id,
                 'eve_nome' => 'Evento Demo 2025',
                 'eve_local' => 'Joaquin Norberto',
                 'eve_settings' => [],
-                'eve_banner' => 'demo20252/banner/zUJfTv2NGMouVKxrLPWqNWOjO5vkcq9I8GUChVG0.png',
+                'eve_banner' => 'demo2025/banner/zUJfTv2NGMouVKxrLPWqNWOjO5vkcq9I8GUChVG0.png',
             ]
         );
 
@@ -52,7 +52,7 @@ class DemoSeeder extends Seeder
         // Categorias (colunas reais)
         $cat1 = Category::firstOrCreate(
             ['eve_id' => $event->id, 'cat_nome' => 'Visitante'],
-            ['cat_ativo' => true, 'cat_aprova' => false, 'cat_banner_path' => 'demo20252/categorias/1/banner/DZea9fU9g3dI5thTFabFd4cigKQsvaBRDlHcUzlH.png'],
+            ['cat_ativo' => true, 'cat_aprova' => false, 'cat_banner_path' => 'demo2025/categorias/1/banner/DZea9fU9g3dI5thTFabFd4cigKQsvaBRDlHcUzlH.png'],
         );
 
         // Forms (colunas reais)

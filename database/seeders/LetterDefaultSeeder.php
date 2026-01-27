@@ -43,10 +43,10 @@ class LetterDefaultSeeder extends Seeder
         }
 
         $html = <<<HTML
-<p><img src="http://127.0.0.1:8000/storage/demo20252/banner/zUJfTv2NGMouVKxrLPWqNWOjO5vkcq9I8GUChVG0.png" alt="" width="798" height="243"></p>
+<p><img src="http://127.0.0.1:8000/storage/demo2025/banner/zUJfTv2NGMouVKxrLPWqNWOjO5vkcq9I8GUChVG0.png" alt="" width="798" height="243"></p>
 <p>Parabens {{nome}} você foi cadastrado com sucesso e pode participar do evento {{evento}}</p>
 <p>&nbsp;</p>
-<p><a title="Para acessar sua area clique aqui" href="http://127.0.0.1:8000/e/demo20252/ja-sou-inscrito" target="_blank" rel="noopener">Para acessar sua area clique aqui</a></p>
+<p><a title="Para acessar sua area clique aqui" href="http://127.0.0.1:8000/e/demo2025/ja-sou-inscrito" target="_blank" rel="noopener">Para acessar sua area clique aqui</a></p>
 HTML;
 
 

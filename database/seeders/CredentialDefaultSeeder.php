@@ -53,7 +53,7 @@ JSON;
             'cre_nome' => 'credencial visitante',
             'cre_tipo' => 'A4',
             'cat_id' => json_encode([(int) $catId]),
-            'cre_fundo' => 'demo20252/credenciais/uhEp5nvONKxk26Vrn1TXAnMMUSUcSbhfhBeWF3eY.jpg',
+            'cre_fundo' => 'demo2025/credenciais/uhEp5nvONKxk26Vrn1TXAnMMUSUcSbhfhBeWF3eY.jpg',
             'cre_espelhar' => 'S',
             'cre_config' => json_encode($cfg, JSON_UNESCAPED_UNICODE),
             'created_at' => now(),
