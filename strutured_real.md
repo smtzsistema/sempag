@@ -51,6 +51,7 @@ sempag/
 │     │  ├─ Letter.php
 │     │  ├─ Organizer.php
 │     │  ├─ Permission.php
+│     │  ├─ Presence.php
 │     │  ├─ Registration.php
 │     │  ├─ RegistrationAnswer.php
 │     │  ├─ RegistrationLog.php
@@ -102,7 +103,8 @@ sempag/
 │  │  ├─ 2026_01_23_000000_create_permission_tables.php
 │  │  ├─ 2026_01_23_000010_create_event_users_table.php
 │  │  ├─ 2026_01_23_170123_add_meta_to_permissions_table.php
-│  │  └─ 2026_01_26_160000_create_credentials_table.php
+│  │  ├─ 2026_01_26_160000_create_credentials_table.php
+│  │  └─ 2026_01_27_000000_create_presenca_table.php
 │  ├─seeders/
 │  │  ├─ CredentialDefaultSeeder.php
 │  │  ├─ DatabaseSeeder.php

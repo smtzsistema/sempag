@@ -385,6 +385,15 @@ Route::prefix('/e/{event}/admin')->name('admin.')->group(function () {
             ->middleware('permission:sync.manage')
             ->name('sync.index');
 
+        Route::get('/presenca', [AttendanceController::class, 'index'])
+            ->middleware('permission:registrations.salas')
+            ->name('attendance.index');
+
+        Route::get('/presenca/exportar', [AttendanceController::class, 'export'])
+            ->middleware('permission:registrations.salas')
+            ->name('attendance.export');
+
+
         // --------------------------
         // USUÁRIOS
         // --------------------------

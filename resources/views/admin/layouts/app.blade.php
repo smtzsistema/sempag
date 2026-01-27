@@ -116,12 +116,12 @@
                             <a href="{{ $i['href'] }}" class="{{ $i['cls'] }}"><span>{{ $i['label'] }}</span></a>
                         @endcan
                         @can('registrations.salas')
-                        @php($i = $navItem('Lista por sala (em breve)', route('admin.attendance.index', $event), $is('admin.attendance.*'), 'Em breve'))
-                        <a href="{{ $i['href'] }}" class="{{ $i['cls'] }}">
-                            <span>{{ $i['label'] }}</span>
-                            <span class="text-xs rounded-full border border-zinc-700 bg-zinc-900 px-2 py-0.5 text-zinc-300">{{ $i['badge'] }}</span>
-                        </a>
+                            @php($i = $navItem('Lista por sala (presença)', route('admin.attendance.index', $event), $is('admin.attendance.*')))
+                            <a href="{{ $i['href'] }}" class="{{ $i['cls'] }}">
+                                <span>{{ $i['label'] }}</span>
+                            </a>
                         @endcan
+
                     </div>
                 </div>
 
