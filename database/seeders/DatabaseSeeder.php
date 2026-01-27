@@ -17,6 +17,7 @@ class DatabaseSeeder extends Seeder
             DemoSeeder::class,
             LetterDefaultSeeder::class,
             CredentialDefaultSeeder::class,
+            StartAssetsSeeder::class,
 
         ]);
     }
