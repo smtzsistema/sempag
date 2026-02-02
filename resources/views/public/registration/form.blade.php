@@ -45,7 +45,7 @@
         </div>
     @endif
 
-    <form method="POST" action="{{ route('public.registration.store', [$event, $category]) }}"
+    <form method="POST" enctype="multipart/form-data" action="{{ route('public.registration.store', [$event, $category]) }}"
           class="rounded-2xl bg-zinc-900 border border-zinc-800 p-6 space-y-5">
         @csrf
 
@@ -81,6 +81,18 @@
             Use esse e-mail e senha para acessar sua área futuramente.
         </p>
 
+
+
+        @if(method_exists($form, 'photoEnabled') && $form->photoEnabled())
+            <div>
+                <label class="block text-sm font-medium mb-2">Foto <span class="text-red-300">*</span></label>
+                <input type="file" name="photo" required accept="image/png,image/jpeg"
+                       class="w-full rounded-xl bg-zinc-950 border border-zinc-800 px-3 py-2">
+                <p class="text-xs text-zinc-400 mt-2">
+                    Envie uma foto (JPG/PNG). Ela aparece na sua área, no admin e pode ser usada na credencial.
+                </p>
+            </div>
+        @endif
         {{-- CAMPOS DINÂMICOS --}}
         @foreach($form->fields as $field)
             @php

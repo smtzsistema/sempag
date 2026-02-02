@@ -7,6 +7,7 @@ use App\Models\Event;
 use App\Models\Registration;
 use App\Models\Category;
 use App\Support\RegistrationAudit;
+use App\Support\RegistrationPhoto;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -64,7 +65,7 @@ class RegistrationAdminController extends Controller
         abort_unless((int)$registration->eve_id === (int)$event->eve_id, 404);
 
         // carrega a categoria e a ficha/campos
-        $registration->load(['category', 'form.fields']);
+        $registration->load(['category', 'form.fields', 'activePhoto']);
 
         $fields = $registration->form?->fields
             ?->sortBy('fic_ordem')
@@ -98,7 +99,7 @@ class RegistrationAdminController extends Controller
     {
         abort_unless((int)$registration->eve_id === (int)$event->eve_id, 404);
 
-        $registration->load(['form.fields']);
+        $registration->load(['form.fields', 'activePhoto']);
 
         $fields = $registration->form?->fields
             ?->sortBy('fic_ordem')
@@ -246,6 +247,42 @@ class RegistrationAdminController extends Controller
             ->with('ok', 'Inscrição atualizada.');
     }
 
+
+
+    public function photoUpdate(Request $request, Event $event, Registration $registration)
+    {
+        abort_unless((int)$registration->eve_id === (int)$event->eve_id, 404);
+
+        $registration->load(['form']);
+
+        // só permite se o formulário tiver o módulo ativo
+        if ((string)($registration->form?->form_foto ?? 'N') !== 'S') {
+            return back()->with('err', 'Módulo de foto desativado neste formulário.');
+        }
+
+        $data = $request->validate([
+            'photo' => ['required', 'file', 'image', 'mimes:jpg,jpeg,png,webp', 'max:5120'],
+        ]);
+
+        RegistrationPhoto::store($event, $registration, $data['photo']);
+
+        return back()->with('ok', 'Foto atualizada.');
+    }
+
+    public function photoDestroy(Request $request, Event $event, Registration $registration)
+    {
+        abort_unless((int)$registration->eve_id === (int)$event->eve_id, 404);
+
+        $registration->load(['form']);
+
+        if ((string)($registration->form?->form_foto ?? 'N') !== 'S') {
+            return back()->with('err', 'Módulo de foto desativado neste formulário.');
+        }
+
+        RegistrationPhoto::deactivateAll($registration);
+
+        return back()->with('ok', 'Foto removida.');
+    }
 
     public function approve(Event $event, Registration $registration)
     {

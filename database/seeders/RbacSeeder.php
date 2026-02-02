@@ -25,6 +25,10 @@ class RbacSeeder extends Seeder
             ['name' => 'registrations.delete', 'perm_label' => 'Excluir inscrição', 'perm_group' => 'Inscrições'],
             ['name' => 'registrations.export', 'perm_label' => 'Exportar relatórios', 'perm_group' => 'Inscrições'],
             ['name' => 'registrations.salas', 'perm_label' => 'Lista por sala', 'perm_group' => 'Inscrições'],
+            ['name' => 'fotos.view', 'perm_label' => 'Ver Fotos', 'perm_group' => 'Inscrições'],
+            ['name' => 'fotos.edit', 'perm_label' => 'Editar/Excluir Fotos', 'perm_group' => 'Inscrições'],
+
+
 
 
             // Estatísticas

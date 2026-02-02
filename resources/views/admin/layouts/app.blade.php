@@ -92,7 +92,7 @@
                             <a href="{{ $i['href'] }}" class="{{ $i['cls'] }}"><span>{{ $i['label'] }}</span></a>
                             @php($i = $navItem('Grupos de Permissões', route('admin.system.roles.index', $event), $is('admin.system.roles.*')))
                             <a href="{{ $i['href'] }}" class="{{ $i['cls'] }}"><span>{{ $i['label'] }}</span></a>
-                            @php($i = $navItem('Credenciais', route('admin.system.credentials.index', $event), $is('admin.system.credentials.*')))
+                            @php($i = $navItem('Configurações de Credenciais', route('admin.system.credentials.index', $event), $is('admin.system.credentials.*')))
                             <a href="{{ $i['href'] }}" class="{{ $i['cls'] }}"><span>{{ $i['label'] }}</span></a>
                         </div>
                     </div>
@@ -256,81 +256,79 @@
             </button>
         </div>
 
-        <div class="p-5">
-            <form method="GET"
-                  action="{{ route('admin.registrations.exports.filtered', $event) }}"
-                  class="grid md:grid-cols-12 gap-4">
+        <div id="admin_modal_all">
+            <div class="p-5">
+                <form method="GET"
+                      action="{{ route('admin.registrations.exports.filtered', $event) }}"
+                      class="grid md:grid-cols-12 gap-4">
+                    <div class="md:col-span-7">
+                        <div class="flex items-center justify-between gap-3">
+                            <label class="block text-xs text-zinc-400">Categorias (multi)</label>
+                            <div class="flex items-center gap-2">
+                                <button type="button" class="text-xs text-emerald-300 hover:underline"
+                                        onclick="adminSelAll('admin_modal_cat_ids')">Selecionar todas
+                                </button>
+                                <span class="text-zinc-700">•</span>
+                                <button type="button" class="text-xs text-zinc-300 hover:underline"
+                                        onclick="adminSelNone('admin_modal_cat_ids')">Limpar
+                                </button>
+                            </div>
+                        </div>
 
-                <div class="md:col-span-7">
-                    <div class="flex items-center justify-between gap-3">
-                        <label class="block text-xs text-zinc-400">Categorias (multi)</label>
-                        <div class="flex items-center gap-2">
-                            <button type="button" class="text-xs text-emerald-300 hover:underline"
-                                    onclick="adminSelAll('admin_modal_cat_ids')">Selecionar todas
-                            </button>
-                            <span class="text-zinc-700">•</span>
-                            <button type="button" class="text-xs text-zinc-300 hover:underline"
-                                    onclick="adminSelNone('admin_modal_cat_ids')">Limpar
-                            </button>
+                        <div id="admin_modal_cat_ids"
+                             class="mt-2 w-full rounded-2xl bg-zinc-950 border border-zinc-800 p-2 max-h-64 overflow-auto">
+                            @foreach(($categories ?? \App\Models\Category::where('eve_id', $event->id)->orderBy('cat_nome')->get()) as $c)
+                                <label
+                                    class="flex items-center gap-2 rounded-xl px-2 py-2 hover:bg-zinc-900/60 cursor-pointer">
+                                    <input type="checkbox" name="cat_ids[]" value="{{ $c->cat_id }}"
+                                           class="h-4 w-4 accent-emerald-500">
+                                    <span class="text-sm text-zinc-200">{{ $c->cat_nome }}</span>
+                                </label>
+                            @endforeach
                         </div>
                     </div>
 
-                    <div id="admin_modal_cat_ids"
-                         class="mt-2 w-full rounded-2xl bg-zinc-950 border border-zinc-800 p-2 max-h-64 overflow-auto">
-                        @foreach(($categories ?? \App\Models\Category::where('eve_id', $event->id)->orderBy('cat_nome')->get()) as $c)
-                            <label
-                                class="flex items-center gap-2 rounded-xl px-2 py-2 hover:bg-zinc-900/60 cursor-pointer">
-                                <input type="checkbox" name="cat_ids[]" value="{{ $c->cat_id }}"
-                                       class="h-4 w-4 accent-emerald-500">
-                                <span class="text-sm text-zinc-200">{{ $c->cat_nome }} <span
-                                        class="text-xs text-zinc-500">({{ $c->cat_id }})</span></span>
-                            </label>
-                        @endforeach
-                    </div>
-                </div>
+                    <div class="md:col-span-5">
+                        <div class="flex items-center justify-between gap-3">
+                            <label class="block text-xs text-zinc-400">Status (multi)</label>
+                            <div class="flex items-center gap-2">
+                                <button type="button" class="text-xs text-emerald-300 hover:underline"
+                                        onclick="adminSelAll('admin_modal_statuses')">Selecionar todos
+                                </button>
+                                <span class="text-zinc-700">•</span>
+                                <button type="button" class="text-xs text-zinc-300 hover:underline"
+                                        onclick="adminSelNone('admin_modal_statuses')">Limpar
+                                </button>
+                            </div>
+                        </div>
 
-                <div class="md:col-span-5">
-                    <div class="flex items-center justify-between gap-3">
-                        <label class="block text-xs text-zinc-400">Status (multi)</label>
-                        <div class="flex items-center gap-2">
-                            <button type="button" class="text-xs text-emerald-300 hover:underline"
-                                    onclick="adminSelAll('admin_modal_statuses')">Selecionar todos
-                            </button>
-                            <span class="text-zinc-700">•</span>
-                            <button type="button" class="text-xs text-zinc-300 hover:underline"
-                                    onclick="adminSelNone('admin_modal_statuses')">Limpar
-                            </button>
+                        <div id="admin_modal_statuses"
+                             class="mt-2 w-full rounded-2xl bg-zinc-950 border border-zinc-800 p-2 max-h-64 overflow-auto">
+                            @foreach((['S'=>'Aprovados','E'=>'Em análise','R'=>'Reprovados','N'=>'Excluídos']) as $k => $label)
+                                <label
+                                    class="flex items-center gap-2 rounded-xl px-2 py-2 hover:bg-zinc-900/60 cursor-pointer">
+                                    <input type="checkbox" name="statuses[]" value="{{ $k }}"
+                                           @checked(in_array($k, ['S','E','R'], true)) class="h-4 w-4 accent-emerald-500">
+                                    <span class="text-sm text-zinc-200">{{ $label }}</span>
+                                </label>
+                            @endforeach
                         </div>
                     </div>
 
-                    <div id="admin_modal_statuses"
-                         class="mt-2 w-full rounded-2xl bg-zinc-950 border border-zinc-800 p-2 max-h-64 overflow-auto">
-                        @foreach((['S'=>'Aprovados','E'=>'Em análise','R'=>'Reprovados','N'=>'Excluídos']) as $k => $label)
-                            <label
-                                class="flex items-center gap-2 rounded-xl px-2 py-2 hover:bg-zinc-900/60 cursor-pointer">
-                                <input type="checkbox" name="statuses[]" value="{{ $k }}"
-                                       @checked(in_array($k, ['S','E','R'], true)) class="h-4 w-4 accent-emerald-500">
-                                <span class="text-sm text-zinc-200">{{ $label }} <span class="text-xs text-zinc-500">({{ $k }})</span></span>
-                            </label>
-                        @endforeach
+                    <div class="md:col-span-12 flex flex-col sm:flex-row gap-3 sm:items-center sm:justify-between pt-2">
+                        <div class="text-xs text-zinc-500">Caso queira imprimir todas as inscrições sem filtros basta
+                            clicar em
+                            <button type="button" class="text-xs text-emerald-300 hover:underline"
+                                    onclick="adminSelAll('admin_modal_all')">Selecionar todos
+                            </button>
+                            em ambos os filtros.
+                        </div>
+                        <button
+                            class="rounded-xl bg-emerald-600 hover:bg-emerald-500 text-zinc-950 font-semibold px-5 py-2 transition">
+                            Baixar CSV
+                        </button>
                     </div>
-                </div>
-
-                <div class="md:col-span-12 flex flex-col sm:flex-row gap-3 sm:items-center sm:justify-between pt-2">
-                    <div class="text-xs text-zinc-500">CSV em UTF-8 com separador ";" (Excel PT-BR)</div>
-                    <button
-                        class="rounded-xl bg-emerald-600 hover:bg-emerald-500 text-zinc-950 font-semibold px-5 py-2 transition">
-                        Baixar CSV
-                    </button>
-                </div>
-            </form>
-
-            <div class="mt-4 text-xs text-zinc-500">
-                Precisa de mais opções? Você também pode ir em
-                <a class="text-emerald-300 hover:underline"
-                   href="{{ route('admin.registrations.exports.index', $event) }}">
-                    Exportar relatório (CSV)
-                </a>.
+                </form>
             </div>
         </div>
     </div>

@@ -8,6 +8,7 @@ use App\Models\Registration;
 use App\Models\Credential;
 use App\Support\RegistrationAudit;
 use App\Models\Letter;
+use App\Support\RegistrationPhoto;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
 
@@ -27,6 +28,8 @@ class AttendeeAreaController extends Controller
     {
         $registration = $this->currentRegistration($event);
 
+        $category = $registration->category;
+
         $status = (string)($registration->ins_aprovado ?? '');
         $statusLabel = match ($status) {
             'S' => 'Aprovada',
@@ -35,6 +38,8 @@ class AttendeeAreaController extends Controller
             'N' => 'Excluída',
             default => $status,
         };
+
+        $registration->status = $statusLabel;
 
         $credUi = [
             'enabled' => false,
@@ -49,7 +54,7 @@ class AttendeeAreaController extends Controller
             $credUi['href'] = '#';
             $credUi['desc'] = "Indisponível: status da inscrição está {$statusLabel}.";
             $credUi['class'] = 'bg-red-950/40 border-red-800 text-red-100 opacity-90 cursor-not-allowed';
-            return view('public.attendee.area', compact('event', 'registration', 'credUi'));
+            return view('public.attendee.area', compact('event', 'registration', 'credUi', 'category'));
         }
 
         $catId = (int)($registration->cat_id ?? 0);
@@ -66,7 +71,7 @@ class AttendeeAreaController extends Controller
             $credUi['href'] = '#';
             $credUi['desc'] = 'Nenhuma credencial disponível pra sua categoria.';
             $credUi['class'] = 'bg-zinc-950 border-zinc-800 opacity-70 cursor-not-allowed';
-            return view('public.attendee.area', compact('event', 'registration', 'credUi'));
+            return view('public.attendee.area', compact('event', 'registration', 'credUi', 'category'));
         }
 
         if ($creds->count() === 1) {
@@ -74,7 +79,7 @@ class AttendeeAreaController extends Controller
             $credUi['href'] = route('public.attendee.credentials.print', [$event, $creds->first()->cre_id]);
             $credUi['desc'] = 'Abrir e imprimir sua credencial';
             $credUi['class'] = 'bg-zinc-950 border-zinc-800 hover:border-zinc-700 transition';
-            return view('public.attendee.area', compact('event', 'registration', 'credUi'));
+            return view('public.attendee.area', compact('event', 'registration', 'credUi', 'category'));
         }
 
         $credUi['enabled'] = true;
@@ -82,12 +87,14 @@ class AttendeeAreaController extends Controller
         $credUi['desc'] = 'Selecione qual credencial deseja imprimir';
         $credUi['class'] = 'bg-zinc-950 border-zinc-800 hover:border-zinc-700 transition';
 
-        return view('public.attendee.area', compact('event', 'registration', 'credUi'));
+        return view('public.attendee.area', compact('event', 'registration', 'credUi', 'category'));
     }
 
     public function letter(Event $event)
     {
         $registration = $this->currentRegistration($event);
+
+        $category = $registration->category;
 
         $catId = (int)($registration->cat_id ?? 0);
         $status = (string)($registration->ins_aprovado ?? '');
@@ -137,6 +144,8 @@ class AttendeeAreaController extends Controller
     {
         $registration = $this->currentRegistration($event);
 
+        $category = $registration->category;
+
         $form = $registration->form;
         abort_unless($form, 404);
 
@@ -167,6 +176,8 @@ class AttendeeAreaController extends Controller
     public function update(Request $request, Event $event)
     {
         $registration = $this->currentRegistration($event);
+
+        $category = $registration->category;
 
         $form = $registration->form;
         abort_unless($form, 404);
@@ -376,4 +387,46 @@ class AttendeeAreaController extends Controller
         if ($d2 === 10) $d2 = 0;
         return $d2 === (int)$cpfDigits[10];
     }
+
+
+    public function photo(Event $event)
+    {
+        $registration = $this->currentRegistration($event);
+
+        $category = $registration->category;
+        abort_unless($registration->form?->photoEnabled(), 404);
+
+        $category = $registration->category;
+
+        return view('public.attendee.photo', compact('event', 'registration', 'category'));
+    }
+
+    public function photoUpdate(Request $request, Event $event)
+    {
+        $registration = $this->currentRegistration($event);
+
+        $category = $registration->category;
+        abort_unless($registration->form?->photoEnabled(), 404);
+
+        $data = $request->validate([
+            'photo' => ['required', 'file', 'image', 'mimes:jpg,jpeg,png', 'max:10240'],
+        ]);
+
+        RegistrationPhoto::store($event, $registration, $request->file('photo'));
+
+        return back()->with('ok', 'Foto atualizada.');
+    }
+
+    public function photoDestroy(Event $event)
+    {
+        $registration = $this->currentRegistration($event);
+
+        $category = $registration->category;
+        abort_unless($registration->form?->photoEnabled(), 404);
+
+        RegistrationPhoto::deactivateAll($registration);
+
+        return back()->with('ok', 'Foto removida.');
+    }
+
 }

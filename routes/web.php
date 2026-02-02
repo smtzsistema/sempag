@@ -98,6 +98,16 @@ Route::middleware('attendee')->group(function () {
     Route::post('/e/{event}/minha-area/editar', [AttendeeAreaController::class, 'update'])
         ->name('public.attendee.update');
 
+    // Foto do inscrito
+    Route::get('/e/{event}/minha-area/foto', [AttendeeAreaController::class, 'photo'])
+        ->name('public.attendee.photo');
+
+    Route::post('/e/{event}/minha-area/foto', [AttendeeAreaController::class, 'photoUpdate'])
+        ->name('public.attendee.photo.update');
+
+    Route::post('/e/{event}/minha-area/foto/excluir', [AttendeeAreaController::class, 'photoDestroy'])
+        ->name('public.attendee.photo.destroy');
+
     // Credenciais do inscrito
     Route::get('/e/{event}/minha-area/credencial', [AttendeeCredentialController::class, 'entry'])
         ->name('public.attendee.credential.entry');
@@ -158,6 +168,15 @@ Route::prefix('/e/{event}/admin')->name('admin.')->group(function () {
         Route::post('/inscricoes/{registration:ins_token}/editar', [RegistrationAdminController::class, 'update'])
             ->middleware('permission:registrations.edit')
             ->name('registrations.update');
+
+        // Foto do participante
+        Route::post('/inscricoes/{registration:ins_token}/foto', [RegistrationAdminController::class, 'photoUpdate'])
+            ->middleware('permission:registrations.edit')
+            ->name('registrations.photo.update');
+
+        Route::post('/inscricoes/{registration:ins_token}/foto/excluir', [RegistrationAdminController::class, 'photoDestroy'])
+            ->middleware('permission:registrations.edit')
+            ->name('registrations.photo.destroy');
 
         Route::post('/inscricoes/{registration:ins_token}/excluir', [RegistrationAdminController::class, 'destroy'])
             ->middleware('permission:registrations.delete')

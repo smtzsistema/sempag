@@ -39,7 +39,7 @@
                 @error('form_nome') <div class="text-red-300 text-xs mt-1">{{ $message }}</div> @enderror
             </div>
 
-            <div class="md:col-span-2 flex items-end">
+            <div class="md:col-span-2 flex flex-wrap items-end gap-6">
                 <label class="inline-flex items-center gap-2">
                     <input
                         type="checkbox"
@@ -49,6 +49,17 @@
                         @checked(old('form_ativo', (bool) $form->form_ativo))
                     >
                     <span class="text-sm">Ativa</span>
+                </label>
+
+                <label class="inline-flex items-center gap-2">
+                    <input
+                        type="checkbox"
+                        name="form_foto"
+                        value="1"
+                        class="rounded"
+                        @checked(old('form_foto', ((string)($form->form_foto ?? 'N')) === 'S'))
+                    >
+                    <span class="text-sm">Módulo de foto (obrigatório)</span>
                 </label>
             </div>
         </div>

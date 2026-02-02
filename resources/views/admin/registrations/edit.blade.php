@@ -13,6 +13,68 @@
 
 @section('content')
 
+
+    {{-- Card: Foto do participante --}}
+    <div id="foto" class="rounded-2xl bg-zinc-900 border border-zinc-800 p-5 mb-6">
+        <div class="flex items-start justify-between gap-3">
+            <div>
+                <h2 class="text-lg font-semibold">Foto</h2>
+                <div class="text-sm text-zinc-400 mt-1">
+                    A exclusão só desativa a foto (histórico fica salvo).
+                </div>
+            </div>
+        </div>
+
+        @if((string)($registration->form?->form_foto ?? 'N') !== 'S')
+            <div class="mt-4 text-sm text-zinc-400">
+                Módulo de foto desativado neste formulário.
+            </div>
+        @else
+            <div class="mt-4 grid lg:grid-cols-3 gap-4 items-start">
+                <div class="lg:col-span-1">
+                    <div class="w-48 h-60 rounded-2xl overflow-hidden border border-zinc-800 bg-zinc-950">
+                        @if($registration->photo_url)
+                            <img src="{{ $registration->photo_url }}" alt="Foto" class="w-full h-full object-cover">
+                        @else
+                            <div class="w-full h-full flex items-center justify-center text-sm text-zinc-400">
+                                Sem foto
+                            </div>
+                        @endif
+                    </div>
+                </div>
+
+                <div class="lg:col-span-2 space-y-3">
+                    <form method="POST" action="{{ route('admin.registrations.photo.update', [$event, $registration]) }}"
+                          enctype="multipart/form-data" class="space-y-3">
+                        @csrf
+
+                        <div>
+                            <label class="block text-xs text-zinc-400 mb-1">Enviar nova foto (JPG/PNG/WebP)</label>
+                            <input type="file" name="photo" accept="image/*" required
+                                   class="block w-full text-xs text-zinc-200 file:mr-3 file:rounded-lg file:border-0 file:bg-zinc-800 file:px-3 file:py-2 file:text-xs file:text-zinc-200 hover:file:bg-zinc-700">
+                            @error('photo')
+                                <div class="mt-2 text-xs text-rose-400">{{ $message }}</div>
+                            @enderror
+                        </div>
+
+                        <button class="rounded-xl bg-emerald-600 hover:bg-emerald-500 text-zinc-950 font-semibold px-5 py-2.5 text-sm transition">
+                            Atualizar foto
+                        </button>
+                    </form>
+
+                    <form method="POST" action="{{ route('admin.registrations.photo.destroy', [$event, $registration]) }}"
+                          onsubmit="return confirm('Tem certeza que deseja excluir a foto?');">
+                        @csrf
+                        <button class="rounded-xl bg-zinc-800 hover:bg-zinc-700 border border-zinc-700 px-5 py-2.5 text-sm transition">
+                            Excluir foto
+                        </button>
+                    </form>
+                </div>
+            </div>
+        @endif
+    </div>
+
+
     <form method="POST" action="{{ route('admin.registrations.update', [$event, $registration]) }}" class="space-y-6">
         @csrf
 

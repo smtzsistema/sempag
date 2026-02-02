@@ -104,9 +104,7 @@ sempag/
 │  │  ├─ 2026_01_23_000010_create_event_users_table.php
 │  │  ├─ 2026_01_23_170123_add_meta_to_permissions_table.php
 │  │  ├─ 2026_01_26_160000_create_credentials_table.php
-│  │  ├─ 2026_01_27_000000_create_presenca_table.php
-│  │  ├─ 2026_02_02_000010_add_form_foto_to_forms_table.php
-│  │  └─ 2026_02_02_000020_create_gallery_table.php
+│  │  └─ 2026_01_27_000000_create_presenca_table.php
 │  ├─seeders/
 │  │  ├─ CredentialDefaultSeeder.php
 │  │  ├─ DatabaseSeeder.php
@@ -224,7 +222,6 @@ sempag/
 │     │  │   ├─ forgot.blade.php
 │     │  │   ├─ letter.blade.php
 │     │  │   ├─ login.blade.php
-│     │  │   ├─ photo.blade.php
 │     │  │   ├─ request.blade.php
 │     │  │   ├─ reset.blade.php
 │     │  │   └─ show.blade.php

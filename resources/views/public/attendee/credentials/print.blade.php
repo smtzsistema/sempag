@@ -24,20 +24,6 @@
     </style>
 </head>
 <body class="bg-zinc-950 text-zinc-100">
-@php
-    $bannerPath = !empty($category->banner_path) ? $category->banner_path : ($event->banner_path ?? null);
-@endphp
-@if($bannerPath)
-    <div class="mx-auto max-w-[1200px]">
-        <div class="w-full h-[200px] flex items-center justify-center rounded-2xl bg-zinc-950">
-            <img
-                src="{{ asset('storage/'.$bannerPath) }}"
-                alt="Banner"
-                class="max-w-full max-h-full object-contain"
-            >
-        </div>
-    </div>
-@endif
 <div class="max-w-5xl mx-auto p-6 no-print">
     <div class="rounded-2xl bg-zinc-900 border border-zinc-800 p-6 flex items-start justify-between gap-4">
         <div>
@@ -154,6 +140,17 @@
                             @if($showLabel)
                                 <div
                                     style="font-size:11px;color:#111;margin-top:4px;word-break:break-word;">{{ $value }}</div>
+                            @endif
+                        @elseif($type === 'photo')
+                            @php
+                                // form_foto: só permite foto se a ficha do inscrito estiver com foto habilitada
+                                $allowPhoto = (($registration->form?->form_foto ?? 'N') === 'S');
+                            @endphp
+
+                            @if($allowPhoto && $value)
+                                <img src="{{ $value }}"
+                                     alt=""
+                                     style="width:100%;height:100%;object-fit: {{ (($el['fit'] ?? 'cover') === 'contain') ? 'contain' : 'cover' }};">
                             @endif
                         @endif
                     </div>

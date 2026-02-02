@@ -63,6 +63,31 @@
             </div>
         </div>
 
+        @if(($registration->form?->form_foto ?? 'N') === 'S')
+            <div class="mt-6 rounded-2xl bg-zinc-950 border border-zinc-800 p-4">
+                <div class="flex items-center justify-between gap-3">
+                    <div>
+                        <div class="text-sm text-zinc-400">Minha foto</div>
+                        <div class="text-xs text-zinc-500 mt-1">Essa foto pode ser usada na credencial e é visível no admin.</div>
+                    </div>
+                    <a href="{{ route('public.attendee.photo', $event) }}"
+                       class="rounded-xl bg-zinc-900 hover:bg-zinc-800 border border-zinc-800 px-4 py-2 text-sm transition">
+                        Editar foto
+                    </a>
+                </div>
+
+                <div class="mt-4">
+                    @if(!empty($registration->photo_url))
+                        <img src="{{ $registration->photo_url }}" alt="Foto" class="w-40 h-40 rounded-2xl object-cover border border-zinc-800">
+                    @else
+                        <div class="w-40 h-40 rounded-2xl bg-zinc-900/40 border border-zinc-800 flex items-center justify-center text-zinc-500 text-sm">
+                            Sem foto
+                        </div>
+                    @endif
+                </div>
+            </div>
+        @endif
+
 
         <div class="mt-6 grid md:grid-cols-3 gap-4">
             <a href="{{ route('public.attendee.letter', $event) }}"

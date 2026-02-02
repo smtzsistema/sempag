@@ -68,9 +68,57 @@
                     @endif
                 </div>
 
-                @can('registrations.approve')
-                    <div class="lg:col-span-1">
-                        <div class="rounded-2xl bg-zinc-950 border border-zinc-800 p-4">
+
+<div class="lg:col-span-1 space-y-4">
+    @can('fotos.view')
+    <div class="rounded-2xl bg-zinc-950 border border-zinc-800 p-4">
+        <div class="text-sm font-semibold text-white">Foto</div>
+
+        @if((string)($registration->form?->form_foto ?? 'N') !== 'S')
+            <div class="mt-3 text-xs text-zinc-400">
+                Módulo de foto desativado neste formulário.
+            </div>
+        @else
+            <div class="mt-3 flex items-start gap-4">
+                <div class="w-32 h-40 rounded-xl overflow-hidden border border-zinc-800 bg-zinc-900">
+                    @if($registration->photo_url)
+                        <img src="{{ $registration->photo_url }}" alt="Foto"
+                             class="w-full h-full object-cover">
+                    @else
+                        <div class="w-full h-full flex items-center justify-center text-xs text-zinc-400">
+                            Sem foto
+                        </div>
+                    @endif
+                </div>
+
+                <div class="flex-1">
+                    @can('fotos.edit')
+                    <form method="POST" action="{{ route('admin.registrations.photo.update', [$event, $registration]) }}"
+                          enctype="multipart/form-data" class="space-y-2">
+                        @csrf
+                        <input type="file" name="photo" accept="image/*" required
+                               class="block w-full text-xs text-zinc-200 file:mr-3 file:rounded-lg file:border-0 file:bg-zinc-800 file:px-3 file:py-2 file:text-xs file:text-zinc-200 hover:file:bg-zinc-700">
+                        <button class="w-full rounded-xl bg-emerald-600 hover:bg-emerald-500 text-zinc-950 font-semibold py-2 text-sm transition">
+                            Enviar nova foto
+                        </button>
+                    </form>
+                    <form method="POST" action="{{ route('admin.registrations.photo.destroy', [$event, $registration]) }}"
+                          class="mt-2"
+                          onsubmit="return confirm('Tem certeza que deseja excluir a foto?');">
+                        @csrf
+                        <button class="w-full rounded-xl bg-zinc-800 hover:bg-zinc-700 border border-zinc-700 py-2 text-sm transition">
+                            Excluir foto
+                        </button>
+                    </form>
+                    @endcan
+                </div>
+            </div>
+        @endif
+    </div>
+    @endcan
+
+    @can('registrations.approve')
+        <div class="rounded-2xl bg-zinc-950 border border-zinc-800 p-4">
                             <div class="text-sm font-semibold text-white">Aprovação</div>
 
                             @if($status == 'S')
@@ -104,8 +152,9 @@
                                 </form>
                             </div>
                         </div>
-                    </div>
-                @endcan
+    @endcan
+</div>
+
             </div>
         </div>
         <div class="rounded-2xl bg-zinc-900 border border-zinc-800 p-5">

@@ -47,6 +47,7 @@ class FormAdminController extends Controller
             'cat_id'     => ['required', 'integer'],
             'form_nome'  => ['required', 'string', 'min:2', 'max:120'],
             'form_ativo' => ['nullable'], // checkbox
+            'form_foto' => ['nullable'], // checkbox
             'clone_form_id' => ['nullable', 'integer'],
         ]);
 
@@ -67,6 +68,7 @@ class FormAdminController extends Controller
                 'form_nome'  => $data['form_nome'],
                 'form_versao'=> $nextVersion,
                 'form_ativo' => (bool) ($data['form_ativo'] ?? false),
+            'form_foto'  => (bool) ($data['form_foto'] ?? false) ? 'S' : 'N',
             ]);
 
             // Clonar campos (tbl_ficha) se veio clone_form_id
@@ -126,11 +128,13 @@ class FormAdminController extends Controller
         $data = $request->validate([
             'form_nome'  => ['required', 'string', 'min:2', 'max:120'],
             'form_ativo' => ['nullable'],
+            'form_foto' => ['nullable'],
         ]);
 
         $form->update([
             'form_nome'  => $data['form_nome'],
             'form_ativo' => (bool) ($data['form_ativo'] ?? false),
+            'form_foto'  => (bool) ($data['form_foto'] ?? false) ? 'S' : 'N',
         ]);
 
         return back()->with('ok', 'Ficha atualizada.');

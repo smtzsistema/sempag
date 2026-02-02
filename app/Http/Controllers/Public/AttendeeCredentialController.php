@@ -7,6 +7,7 @@ use App\Models\Credential;
 use App\Models\Event;
 use App\Models\Registration;
 use App\Models\RegistrationAnswer;
+use App\Support\RegistrationPhoto;
 
 class AttendeeCredentialController extends Controller
 {
@@ -145,15 +146,22 @@ class AttendeeCredentialController extends Controller
             $src = (string)($el['source'] ?? '');
             $raw = $this->resolveSource($src, $registration, $answers);
 
+            // ✅ foto não aplica regras de texto (upper/limit/etc), senão quebra URL
+            if (($el['type'] ?? '') === 'photo') {
+                $el['value'] = trim((string)$raw);
+                return $el;
+            }
+
             [$val, $effectiveFont] = $this->applyCredentialRules($raw, $el);
 
             $el['value'] = $val;
             if ($effectiveFont !== null) {
-                $el['effectiveFontSize'] = $effectiveFont; // opcional
+                $el['effectiveFontSize'] = $effectiveFont;
             }
 
             return $el;
         }, $elements);
+
 
 
         $bgUrl = null;
@@ -233,6 +241,7 @@ class AttendeeCredentialController extends Controller
             $key = substr($source, 4);
 
             if ($key === 'ins_id') return (string)($reg->ins_id ?? '');
+            if ($key === 'ins_foto') return (string)(RegistrationPhoto::activeUrl($reg) ?? '');
             if ($key === 'ins_token') return (string)($reg->ins_token ?? '');
 
             $v = $reg->getAttribute($key);

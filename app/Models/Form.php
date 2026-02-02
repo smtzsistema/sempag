@@ -10,18 +10,19 @@ class Form extends Model
     protected $primaryKey = 'form_id';
 
     protected $fillable = [
-
         'eve_id',
         'cat_id',
         'form_nome',
         'form_versao',
         'form_ativo',
+        'form_foto',
     ];
 
     protected $casts = [
         // casts nas colunas reais
         'form_ativo' => 'bool',
         'form_versao' => 'int',
+        'form_foto' => 'string',
     ];
 
     public function getIdAttribute()
@@ -43,6 +44,11 @@ class Form extends Model
     {
         return $this->hasMany(FormField::class, 'form_id', 'form_id')
             ->orderBy('fic_ordem');
+    }
+
+    public function photoEnabled(): bool
+    {
+        return ((string)($this->form_foto ?? 'N')) === 'S';
     }
 
     // Acessors/Mutators (compat)
@@ -84,10 +90,10 @@ class Form extends Model
 
     public function getActiveAttribute()
     {
-        return (bool) ($this->attributes['form_ativo'] ?? false);
+        return (bool)($this->attributes['form_ativo'] ?? false);
     }
     public function setActiveAttribute($value): void
     {
-        $this->attributes['form_ativo'] = (bool) $value;
+        $this->attributes['form_ativo'] = (bool)$value;
     }
 }

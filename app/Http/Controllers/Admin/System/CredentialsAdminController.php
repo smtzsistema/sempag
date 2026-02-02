@@ -237,6 +237,9 @@ class CredentialsAdminController extends Controller
             ['key' => 'ins_nome', 'label' => 'Nome (ins_nome)'],
             ['key' => 'ins_sobrenome', 'label' => 'Sobrenome (ins_sobrenome)'],
             ['key' => 'ins_nomecracha', 'label' => 'Nome para crachá (ins_nomecracha)'],
+
+            ['key' => 'ins_foto', 'label' => 'Foto (ins_foto)'],
+
             ['key' => 'ins_email', 'label' => 'E-mail (ins_email)'],
             ['key' => 'ins_cpf', 'label' => 'CPF (ins_cpf)'],
             ['key' => 'ins_cnpj', 'label' => 'CNPJ (ins_cnpj)'],

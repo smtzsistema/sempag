@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Support\RegistrationPhoto;
 use Illuminate\Database\Eloquent\Model;
 
 class Registration extends Model
@@ -441,6 +442,25 @@ class Registration extends Model
             }
         }
         parent::__set($key, $value);
+    }
+
+
+
+    public function photos()
+    {
+        return $this->hasMany(Gallery::class, 'ins_id', 'ins_id');
+    }
+
+    public function activePhoto()
+    {
+        return $this->hasOne(Gallery::class, 'ins_id', 'ins_id')
+            ->where('gal_ativo', 1)
+            ->orderByDesc('gal_date');
+    }
+
+    public function getPhotoUrlAttribute(): ?string
+    {
+        return RegistrationPhoto::activeUrl($this);
     }
 
 }

@@ -78,41 +78,48 @@
                                     onclick="CredBuilder.addElement('barcode')">
                                 + Barcode
                             </button>
+
+                            <button type="button"
+                                    class="rounded-xl border border-zinc-800 bg-zinc-950/40 hover:bg-zinc-900 px-3 py-2 text-sm transition"
+                                    onclick="CredBuilder.addElement('photo')">
+                                + Foto
+                            </button>
                         </div>
                     </div>
 
                     <div class="p-5">
                         {{-- preview stage --}}
                         <div class="w-full">
-                        <div class="w-full overflow-auto">
-                            <div id="cb-stageWrap"
-                                 class="relative mx-auto rounded-2xl border border-zinc-800 bg-zinc-950/40 shadow-2xl select-none"
-                                 style="width: min(100%, 780px);">
-                                {{-- scaled A4 --}}
-                                <div id="cb-stage"
-                                     class="relative origin-top-left"
-                                     style="width: {{ $pageW }}px; height: {{ $pageH }}px;">
-                                    {{-- background --}}
-                                    <img id="cb-bg"
-                                         src="{{ $existingBg ?? '' }}"
-                                         alt=""
-                                         class="absolute inset-0 w-full h-full object-cover pointer-events-none"
-                                         style="{{ $existingBg ? '' : 'display:none;' }}"/>
+                            <div class="w-full overflow-auto">
+                                <div id="cb-stageWrap"
+                                     class="relative mx-auto rounded-2xl border border-zinc-800 bg-zinc-950/40 shadow-2xl select-none"
+                                     style="width: min(100%, 780px);">
+                                    {{-- scaled A4 --}}
+                                    <div id="cb-stage"
+                                         class="relative origin-top-left"
+                                         style="width: {{ $pageW }}px; height: {{ $pageH }}px;">
+                                        {{-- background --}}
+                                        <img id="cb-bg"
+                                             src="{{ $existingBg ?? '' }}"
+                                             alt=""
+                                             class="absolute inset-0 w-full h-full object-cover pointer-events-none"
+                                             style="{{ $existingBg ? '' : 'display:none;' }}"/>
 
-                                    {{-- divider (when mirror on) --}}
-                                    <div id="cb-divider"
-                                         class="absolute top-0 bottom-0 w-px bg-zinc-300/30 pointer-events-none"
-                                         style="left: {{ intval($pageW/2) }}px; display:none;"></div>
+                                        {{-- divider (when mirror on) --}}
+                                        <div id="cb-divider"
+                                             class="absolute top-0 bottom-0 w-px bg-zinc-300/30 pointer-events-none"
+                                             style="left: {{ intval($pageW/2) }}px; display:none;"></div>
 
-                                    {{-- elements container --}}
-                                    <div id="cb-elements" class="absolute inset-0"></div>
+                                        {{-- elements container --}}
+                                        <div id="cb-elements" class="absolute inset-0"></div>
+                                    </div>
                                 </div>
                             </div>
                         </div>
-                        </div>
 
                         <div class="mt-3 text-xs text-zinc-400">
-                            Dica: com “Espelhar” ligado, você desenha só na metade esquerda e o lado direito é replicado tudo.
+                            Dica: com “Espelhar” ligado, você desenha só na metade esquerda e o lado direito é replicado
+                            tudo.
                         </div>
                     </div>
                 </div>
@@ -179,7 +186,8 @@
                             <div class="text-xs text-red-400 mt-1">{{ $message }}</div>
                             @enderror
                             @if($existingBg)
-                                <div class="text-xs text-zinc-500 mt-1">Já existe um fundo salvo. Substitui ao enviar outro.
+                                <div class="text-xs text-zinc-500 mt-1">Já existe um fundo salvo. Substitui ao enviar
+                                    outro.
                                 </div>
                             @endif
                         </div>
@@ -346,15 +354,32 @@
 
             function normalizeElement(e) {
                 const type = (e?.type || 'text');
+
                 return {
                     id: e?.id || uid(),
                     type,
+
                     x: clampInt(e?.x ?? 40, 0, state.page.w - 1),
                     y: clampInt(e?.y ?? 40, 0, state.page.h - 1),
-                    w: clampInt(e?.w ?? (type === 'barcode' ? 260 : 320), 10, state.page.w),
-                    h: clampInt(e?.h ?? (type === 'qrcode' ? 160 : 44), 10, state.page.h),
 
-                    source: e?.source || (type === 'text' ? 'reg:ins_nomecracha' : 'reg:ins_token'),
+                    // tamanho padrão por tipo (inclui foto)
+                    w: clampInt(
+                        e?.w ?? (type === 'photo' ? 140 : (type === 'barcode' ? 260 : 320)),
+                        10,
+                        state.page.w
+                    ),
+                    h: clampInt(
+                        e?.h ?? (type === 'photo' ? 180 : (type === 'qrcode' ? 160 : 44)),
+                        10,
+                        state.page.h
+                    ),
+
+                    // source padrão por tipo (inclui foto)
+                    source: e?.source || (
+                        type === 'photo'
+                            ? 'reg:ins_foto'
+                            : (type === 'text' ? 'reg:ins_nomecracha' : 'reg:ins_token')
+                    ),
 
                     // text options
                     fontSize: clampInt(e?.fontSize ?? 24, 6, 120),
@@ -364,16 +389,20 @@
                     align: (e?.align ?? 'left').toString(),
 
                     // formatting / validations
-                    formatMode: (e?.formatMode ?? 'none').toString(),            // none | title | upper
-                    validationMode: (e?.validationMode ?? 'none').toString(),    // none | first_last | limit | limit_font
+                    formatMode: (e?.formatMode ?? 'none').toString(),         // none | title | upper
+                    validationMode: (e?.validationMode ?? 'none').toString(), // none | first_last | limit | limit_font
                     limit: parseInt(e?.limit ?? 0, 10) || 0,
                     fontWhenOver: parseInt(e?.fontWhenOver ?? 0, 10) || 0,
 
                     // barcode/qrcode options
                     showLabel: !!(e?.showLabel ?? false),
                     barcodeFormat: (e?.barcodeFormat ?? 'CODE39').toString(),
+
+                    // photo options
+                    fit: (e?.fit ?? 'cover').toString(), // cover | contain
                 };
             }
+
 
             function clampInt(n, min, max) {
                 n = parseInt(n, 10);
@@ -424,6 +453,12 @@
                 return html;
             }
 
+            function buildPhotoSourceOptionsHTML(selected) {
+                const val = 'reg:ins_foto';
+                const sel = (selected === val) ? 'selected' : '';
+                return `<option value="${val}" ${sel}>Foto (ins_foto)</option>`;
+            }
+
             function escapeHtml(s) {
                 return String(s ?? '')
                     .replaceAll('&', '&amp;')
@@ -437,6 +472,7 @@
                 if (el.type === 'text') return 'Texto';
                 if (el.type === 'qrcode') return 'QRCode';
                 if (el.type === 'barcode') return 'Barcode';
+                if (el.type === 'photo') return 'Foto';
                 return el.type;
             }
 
@@ -570,6 +606,34 @@
                     inner.appendChild(box);
                     if (el.showLabel) inner.appendChild(lab);
                 }
+
+                if (el.type === 'photo') {
+                    inner.style.alignItems = 'center';
+                    inner.style.justifyContent = 'center';
+                    inner.style.flexDirection = 'column';
+                    inner.style.gap = '6px';
+
+                    const box = document.createElement('div');
+                    box.style.width = '90%';
+                    box.style.height = '90%';
+                    box.style.border = '2px solid rgba(255,255,255,0.35)';
+                    box.style.borderRadius = '10px';
+                    box.style.display = 'flex';
+                    box.style.alignItems = 'center';
+                    box.style.justifyContent = 'center';
+                    box.style.color = 'rgba(255,255,255,0.7)';
+                    box.style.fontSize = '12px';
+                    box.textContent = 'FOTO';
+
+                    const lab = document.createElement('div');
+                    lab.style.color = 'rgba(255,255,255,0.7)';
+                    lab.style.fontSize = '11px';
+                    lab.textContent = (el.fit === 'contain' ? 'contain' : 'cover');
+
+                    inner.appendChild(box);
+                    inner.appendChild(lab);
+                }
+
 
                 div.appendChild(inner);
 
@@ -734,11 +798,25 @@
             </div>
 
             <div class="mt-3">
-                <label class="text-xs text-zinc-400">Fonte do dado</label>
-                <select class="mt-1 w-full rounded-xl border border-zinc-800 bg-zinc-950/40 px-3 py-2 text-sm"
-                        onchange="CredBuilder.updateSelected({source:this.value})">
-                    ${buildSourceOptionsHTML(el.source)}
-                </select>
+              <label class="text-xs text-zinc-400">Fonte do dado</label>
+
+              ${el.type === 'photo'
+                    ? `
+                    <select class="mt-1 w-full rounded-xl border border-zinc-800 bg-zinc-950/40 px-3 py-2 text-sm opacity-70"
+                            disabled>
+                        ${buildPhotoSourceOptionsHTML(el.source)}
+                    </select>
+                    <div class="text-[11px] text-zinc-600 mt-1">
+                        A foto sempre vem do módulo de fotos do inscrito.
+                    </div>
+                    `
+                    : `
+                    <select class="mt-1 w-full rounded-xl border border-zinc-800 bg-zinc-950/40 px-3 py-2 text-sm"
+                            onchange="CredBuilder.updateSelected({source:this.value})">
+                        ${buildSourceOptionsHTML(el.source)}
+                    </select>
+                    `
+                }
             </div>
         `;
 
@@ -809,6 +887,19 @@
                     </select>
                 </div>
             `;
+                }
+                if (el.type === 'photo') {
+                    specific += `
+        <div class="mt-3">
+            <label class="text-xs text-zinc-400">Ajuste da foto</label>
+            <select class="mt-1 w-full rounded-xl border border-zinc-800 bg-zinc-950/40 px-3 py-2 text-sm"
+                    onchange="CredBuilder.updateSelected({fit:this.value})">
+                <option value="cover" ${el.fit === 'cover' ? 'selected' : ''}>Preencher (cover)</option>
+                <option value="contain" ${el.fit === 'contain' ? 'selected' : ''}>Conter (contain)</option>
+            </select>
+            <div class="text-[11px] text-zinc-600 mt-1">Cover corta as bordas; Contain não corta.</div>
+        </div>
+    `;
                 }
 
                 inspector.innerHTML = `
@@ -887,6 +978,12 @@
                         base.showLabel = true;
                         base.barcodeFormat = 'CODE39';
                     }
+                    if (type === 'photo') {
+                        base.w = 140;
+                        base.h = 180;
+                        base.source = 'reg:ins_foto';
+                        base.fit = 'cover';
+                    }
 
                     // place on left
                     base.x = 40;
@@ -944,6 +1041,7 @@
                     if (p.validationMode !== undefined) el.validationMode = String(p.validationMode);
                     if (p.limit !== undefined) el.limit = parseInt(p.limit, 10) || 0;
                     if (p.fontWhenOver !== undefined) el.fontWhenOver = parseInt(p.fontWhenOver, 10) || 0;
+                    if (p.fit !== undefined) el.fit = String(p.fit);
 
 
                     // clamp after size change

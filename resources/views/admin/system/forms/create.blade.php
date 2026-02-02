@@ -54,6 +54,13 @@
                     <span class="text-sm">Ativa</span>
                 </label>
             </div>
+
+            <div class="flex items-end">
+                <label class="inline-flex items-center gap-2">
+                    <input type="checkbox" name="form_foto" value="1" class="rounded" @checked(old('form_foto', 0))>
+                    <span class="text-sm">Módulo de foto (obrigatório)</span>
+                </label>
+            </div>
         </div>
 
         <p class="mt-4 text-sm text-zinc-400">

@@ -7,6 +7,7 @@ use App\Models\Category;
 use App\Models\Event;
 use App\Models\Form;
 use App\Models\Registration;
+use App\Support\RegistrationPhoto;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
@@ -50,6 +51,15 @@ class RegistrationController extends Controller
         // 1) valida senha (campo do form deve ser "password" e "password_confirmation")
         $validatedPassword = $request->validate([
             'password' => ['required', 'min:6', 'confirmed'],
+        ]);
+
+        // Foto (módulo do formulário)
+        $photoRules = $form->photoEnabled()
+            ? ['required', 'file', 'image', 'mimes:jpg,jpeg,png', 'max:10240']
+            : ['nullable', 'file', 'image', 'mimes:jpg,jpeg,png', 'max:10240'];
+
+        $request->validate([
+            'photo' => $photoRules,
         ]);
 
         // 2) regras dinâmicas pros campos do form
@@ -178,6 +188,11 @@ class RegistrationController extends Controller
         $registration = new Registration();
         $registration->forceFill($payload);
         $registration->save();
+
+        // Foto obrigatória quando o módulo está ativo
+        if ($form->photoEnabled() && $request->hasFile('photo')) {
+            RegistrationPhoto::store($event, $registration, $request->file('photo'));
+        }
 
         // 6) gera e salva carta de confirmação (HTML) no próprio registro
         $subject = "Confirmação de inscrição - {$event->eve_nome}";
