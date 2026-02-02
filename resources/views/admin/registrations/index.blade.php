@@ -4,13 +4,6 @@
 @section('breadcrumb', 'Admin • Inscrições')
 @section('page_title', 'Lista de inscritos')
 
-@section('top_actions')
-    <button type="button" onclick="__openExportModal()"
-            class="inline-flex items-center gap-2 rounded-xl bg-zinc-900 hover:bg-zinc-800 border border-zinc-800 px-4 py-2 text-sm transition">
-        Exportar CSV
-    </button>
-@endsection
-
 @section('content')
 
 @php
@@ -161,114 +154,5 @@
     </div>
 </div>
 
-{{-- Modal export CSV (categoria + status) --}}
-<div id="exportModal" class="fixed inset-0 z-50 hidden">
-    <div class="absolute inset-0 bg-black/60" onclick="__closeExportModal()"></div>
-
-    <div class="relative mx-auto mt-16 w-[95%] max-w-2xl rounded-2xl bg-zinc-900 border border-zinc-800 shadow-2xl">
-        <div class="p-5 border-b border-zinc-800 flex items-start justify-between gap-3">
-            <div>
-                <div class="text-lg font-semibold">Exportar relatório (CSV)</div>
-                <div class="text-xs text-zinc-400 mt-1">Filtre por categoria e/ou status. Se não selecionar nada, exporta tudo daquele filtro.</div>
-            </div>
-            <button type="button" class="rounded-xl border border-zinc-800 bg-zinc-950/40 px-3 py-2 text-sm" onclick="__closeExportModal()">
-                Fechar
-            </button>
-        </div>
-
-        <div class="p-5">
-            @php
-                $statusOptions = [
-                    'S' => 'Aprovados',
-                    'E' => 'Em análise',
-                    'R' => 'Reprovados',
-                    'N' => 'Excluídos',
-                ];
-            @endphp
-
-            <form method="GET" action="{{ route('admin.registrations.exports.filtered', $event) }}" class="grid md:grid-cols-12 gap-4">
-
-                <div class="md:col-span-7">
-                    <div class="flex items-center justify-between gap-3">
-                        <label class="block text-xs text-zinc-400">Categorias (multi)</label>
-                        <div class="flex items-center gap-2">
-                            <button type="button" class="text-xs text-emerald-300 hover:underline" onclick="__selAll('modal_cat_ids')">Selecionar todas</button>
-                            <span class="text-zinc-700">•</span>
-                            <button type="button" class="text-xs text-zinc-300 hover:underline" onclick="__selNone('modal_cat_ids')">Limpar</button>
-                        </div>
-                    </div>
-
-                    <select id="modal_cat_ids" name="cat_ids[]" multiple size="8" class="mt-2 w-full rounded-2xl bg-zinc-950 border border-zinc-800 px-3 py-2">
-                        @foreach($categories as $c)
-                            <option value="{{ $c->cat_id }}">{{ $c->cat_nome }} ({{ $c->cat_id }})</option>
-                        @endforeach
-                    </select>
-                </div>
-
-                <div class="md:col-span-5">
-                    <div class="flex items-center justify-between gap-3">
-                        <label class="block text-xs text-zinc-400">Status (multi)</label>
-                        <div class="flex items-center gap-2">
-                            <button type="button" class="text-xs text-emerald-300 hover:underline" onclick="__selAll('modal_statuses')">Selecionar todos</button>
-                            <span class="text-zinc-700">•</span>
-                            <button type="button" class="text-xs text-zinc-300 hover:underline" onclick="__selNone('modal_statuses')">Limpar</button>
-                        </div>
-                    </div>
-
-                    <select id="modal_statuses" name="statuses[]" multiple size="8" class="mt-2 w-full rounded-2xl bg-zinc-950 border border-zinc-800 px-3 py-2">
-                        @foreach($statusOptions as $k => $label)
-                            <option value="{{ $k }}" @selected(in_array($k, ['S','E','R'], true))>{{ $label }} ({{ $k }})</option>
-                        @endforeach
-                    </select>
-                </div>
-
-                <div class="md:col-span-12 flex flex-col sm:flex-row gap-3 sm:items-center sm:justify-between pt-2">
-                    <div class="text-xs text-zinc-500">CSV em UTF-8 com separador ";" (Excel PT-BR)</div>
-                    <button class="rounded-xl bg-emerald-600 hover:bg-emerald-500 text-zinc-950 font-semibold px-5 py-2 transition">
-                        Baixar CSV
-                    </button>
-                </div>
-            </form>
-
-            <div class="mt-4 text-xs text-zinc-500">
-                Precisa de mais opções? Você também pode ir em <a class="text-emerald-300 hover:underline" href="{{ route('admin.registrations.exports.index', $event) }}">Exportar relatório (CSV)</a>.
-            </div>
-        </div>
-    </div>
-</div>
-
-<script>
-    function __openExportModal(){
-        const m = document.getElementById('exportModal');
-        if(!m) return;
-        m.classList.remove('hidden');
-        document.body.classList.add('overflow-hidden');
-    }
-    function __closeExportModal(){
-        const m = document.getElementById('exportModal');
-        if(!m) return;
-        m.classList.add('hidden');
-        document.body.classList.remove('overflow-hidden');
-    }
-    function __selAll(id){
-        const el = document.getElementById(id);
-        if(!el) return;
-        Array.from(el.options).forEach(o => o.selected = true);
-    }
-    function __selNone(id){
-        const el = document.getElementById(id);
-        if(!el) return;
-        Array.from(el.options).forEach(o => o.selected = false);
-    }
-    document.addEventListener('keydown', (e) => {
-        if (e.key === 'Escape') __closeExportModal();
-    });
-
-    @if(request()->boolean('export'))
-    document.addEventListener('DOMContentLoaded', () => {
-        __openExportModal();
-    });
-    @endif
-</script>
 
 @endsection
