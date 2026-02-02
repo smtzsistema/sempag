@@ -9,6 +9,7 @@ use App\Models\Credential;
 use App\Support\RegistrationAudit;
 use App\Models\Letter;
 use Illuminate\Http\Request;
+use Illuminate\Validation\Rule;
 
 class AttendeeAreaController extends Controller
 {
@@ -43,7 +44,6 @@ class AttendeeAreaController extends Controller
             'class' => 'bg-zinc-950 border-zinc-800 opacity-70 cursor-not-allowed',
         ];
 
-        // Opção 1: não aprovado => vermelho e desabilitado
         if ($status !== 'S') {
             $credUi['enabled'] = false;
             $credUi['href'] = '#';
@@ -52,7 +52,6 @@ class AttendeeAreaController extends Controller
             return view('public.attendee.area', compact('event', 'registration', 'credUi'));
         }
 
-        // aprovado => busca credenciais que batem na categoria
         $catId = (int)($registration->cat_id ?? 0);
 
         $creds = Credential::query()
@@ -62,7 +61,6 @@ class AttendeeAreaController extends Controller
             ->orderByDesc('cre_id')
             ->get();
 
-        // sem credencial: desabilita (caso raro)
         if ($creds->isEmpty()) {
             $credUi['enabled'] = false;
             $credUi['href'] = '#';
@@ -71,7 +69,6 @@ class AttendeeAreaController extends Controller
             return view('public.attendee.area', compact('event', 'registration', 'credUi'));
         }
 
-        // Opção 2: 1 credencial => vai direto imprimir
         if ($creds->count() === 1) {
             $credUi['enabled'] = true;
             $credUi['href'] = route('public.attendee.credentials.print', [$event, $creds->first()->cre_id]);
@@ -80,7 +77,6 @@ class AttendeeAreaController extends Controller
             return view('public.attendee.area', compact('event', 'registration', 'credUi'));
         }
 
-        // Opção 3: mais de 1 => vai pra escolha
         $credUi['enabled'] = true;
         $credUi['href'] = route('public.attendee.credentials.choose', $event);
         $credUi['desc'] = 'Selecione qual credencial deseja imprimir';
@@ -89,16 +85,12 @@ class AttendeeAreaController extends Controller
         return view('public.attendee.area', compact('event', 'registration', 'credUi'));
     }
 
-
     public function letter(Event $event)
     {
         $registration = $this->currentRegistration($event);
 
         $catId = (int)($registration->cat_id ?? 0);
         $status = (string)($registration->ins_aprovado ?? '');
-
-        // car_trad opcional: se você tiver idioma na inscrição, use aqui
-        // $lang = $registration->lang ?? null;
 
         $letter = Letter::query()
             ->where('eve_id', $event->eve_id)
@@ -107,7 +99,6 @@ class AttendeeAreaController extends Controller
             ->orderByDesc('car_id')
             ->first();
 
-        // Monta nome (prioriza crachá, senão nome + sobrenome)
         $nome = trim((string)($registration->ins_nomecracha ?? ''));
         if ($nome === '') {
             $nome = trim(
@@ -115,7 +106,7 @@ class AttendeeAreaController extends Controller
             );
         }
 
-        $siteUrl = rtrim(url('/'), '/'); // http://127.0.0.1:8000
+        $siteUrl = rtrim(url('/'), '/');
         $eventToken = $event->eve_token;
         $eventUrl = $siteUrl . "/e/{$eventToken}";
 
@@ -128,7 +119,7 @@ class AttendeeAreaController extends Controller
             );
         }
 
-        $insToken = (string)($registration->ins_token ?? ''); // aqui é o token da inscrição
+        $insToken = (string)($registration->ins_token ?? '');
 
         $letterHtml = $letter?->car_texto ?? null;
         if (!empty($letterHtml)) {
@@ -139,16 +130,14 @@ class AttendeeAreaController extends Controller
             );
         }
 
-
         return view('public.attendee.letter', compact('event', 'registration', 'letter', 'letterHtml'));
-
     }
 
     public function edit(Event $event)
     {
         $registration = $this->currentRegistration($event);
 
-        $form = $registration->form; // form usado na inscrição
+        $form = $registration->form;
         abort_unless($form, 404);
 
         $fields = $form->fields()
@@ -162,7 +151,6 @@ class AttendeeAreaController extends Controller
         foreach ($fields as $field) {
             $key = $field->fic_nome;
 
-            // prioridade: coluna física -> JSON
             $val = null;
             if ($key && array_key_exists($key, $registration->getAttributes())) {
                 $val = $registration->{$key};
@@ -188,10 +176,13 @@ class AttendeeAreaController extends Controller
             ->orderBy('fic_ordem')
             ->get();
 
-        // regras dinâmicas (usando padrão novo: fic_validacoes / fic_obrigatorio)
         $rules = [];
         foreach ($fields as $field) {
             $base = $field->fic_validacoes ?: ($field->fic_obrigatorio ? 'required' : 'nullable');
+
+            $baseArr = is_array($base)
+                ? $base
+                : array_values(array_filter(array_map('trim', explode('|', (string)$base)), fn($x) => $x !== ''));
 
             $opts = $field->fic_opcoes;
             $opts = is_array($opts) ? $opts : (is_string($opts) && $opts !== '' ? json_decode($opts, true) : []);
@@ -201,13 +192,96 @@ class AttendeeAreaController extends Controller
                 $rules["f.{$field->fic_id}"] = $field->fic_obrigatorio ? ['required', 'array', 'min:1'] : ['nullable', 'array'];
                 $rules["f.{$field->fic_id}.*"] = ['in:' . implode(',', $opts)];
             } else {
-                $rules["f.{$field->fic_id}"] = $base;
+                $rules["f.{$field->fic_id}"] = $baseArr;
 
                 if ($field->fic_tipo === 'select' && $opts) {
-                    $rules["f.{$field->fic_id}"] = [$base, 'in:' . implode(',', $opts)];
+                    $rules["f.{$field->fic_id}"] = array_merge($baseArr, ['in:' . implode(',', $opts)]);
                 }
             }
+
+            // CPF: valida dígitos + garante que não existe em OUTRA inscrição do mesmo evento
+            $isCpf = ($field->fic_tipo === 'cpf') || in_array((string)$field->fic_nome, ['ins_cpf', 'cpf'], true);
+            if ($isCpf) {
+                $rules["f.{$field->fic_id}"][] = function (string $attribute, $value, $fail) use ($event, $registration) {
+                    $digits = preg_replace('/\D+/', '', (string)$value);
+                    if ($digits === '') return;
+
+                    if (strlen($digits) !== 11 || !$this->isValidCpfDigits($digits)) {
+                        $fail('CPF inválido.');
+                        return;
+                    }
+
+                    $exists = Registration::where('eve_id', $event->eve_id)
+                        ->where('ins_id', '!=', $registration->ins_id)
+                        ->whereRaw(
+                            "REPLACE(REPLACE(REPLACE(REPLACE(ins_cpf,'.',''),'-',''),' ',''),'/','') = ?",
+                            [$digits]
+                        )
+                        ->exists();
+
+                    if ($exists) {
+                        $fail('Esse CPF já está cadastrado em outra inscrição.');
+                    }
+                };
+            }
+
+            // Email: evita dois inscritos com o mesmo e-mail no evento
+            $isEmail = ($field->fic_tipo === 'email') || in_array((string)$field->fic_nome, ['ins_email', 'email'], true);
+            if ($isEmail) {
+                $rules["f.{$field->fic_id}"][] = Rule::unique('tbl_inscricao', 'ins_email')
+                    ->where(fn($q) => $q->where('eve_id', $event->eve_id))
+                    ->ignore($registration->ins_id, 'ins_id');
+            }
+
+            $isMobile = in_array((string)$field->fic_tipo, ['mobile_int','celular_int','celular'], true)
+                || in_array((string)$field->fic_nome, ['ins_tel_celular','ins_celular','ins_whatsapp','ins_mobile'], true);
+
+            if ($isMobile) {
+                $rules["f.{$field->fic_id}"][] = function ($attribute, $value, $fail) {
+                    $digits = preg_replace('/\D+/', '', (string)$value);
+                    if ($digits === '') return;
+
+                    $len = strlen($digits);
+                    if ($len < 10 || $len > 15) {
+                        $fail('Celular inválido. Use +<código><número>.');
+                        return;
+                    }
+
+                    // regra extra BR
+                    if (str_starts_with($digits, '55')) {
+                        // celular BR: 13 dígitos e o 5º dígito (index 4) é 9
+                        if (!($len === 13 && ($digits[4] ?? '') === '9')) {
+                            $fail('Celular BR inválido. Ex: +55 11 91234-5678');
+                        }
+                    }
+                };
+            }
+
+            $isPhone = in_array((string)$field->fic_tipo, ['phone_int','telefone_int','telefone','phone'], true)
+                || in_array((string)$field->fic_nome, ['ins_tel_comercial','ins_telefone','ins_fone','ins_phone'], true);
+
+            if ($isPhone) {
+                $rules["f.{$field->fic_id}"][] = function ($attribute, $value, $fail) {
+                    $digits = preg_replace('/\D+/', '', (string)$value);
+                    if ($digits === '') return;
+
+                    $len = strlen($digits);
+                    if ($len < 10 || $len > 15) {
+                        $fail('Telefone inválido. Use +<código><número>.');
+                        return;
+                    }
+
+                    // regra extra BR
+                    if (str_starts_with($digits, '55')) {
+                        // fixo BR: 12 dígitos e o 5º dígito (index 4) NÃO é 9
+                        if (!($len === 12 && ($digits[4] ?? '') !== '9')) {
+                            $fail('Telefone BR inválido. Ex: +55 11 1234-5678');
+                        }
+                    }
+                };
+            }
         }
+
 
         $validated = $request->validate($rules);
         $payload = $validated['f'] ?? [];
@@ -227,12 +301,17 @@ class AttendeeAreaController extends Controller
 
             $incoming = $payload[$field->fic_id] ?? null;
 
-            // normaliza
             if (is_array($incoming)) {
                 $val = array_values(array_filter(array_map(fn($x) => trim((string)$x), $incoming), fn($x) => $x !== ''));
             } else {
                 $txt = trim((string)($incoming ?? ''));
                 $val = ($txt === '') ? null : $txt;
+
+                if (is_string($val) && in_array($key, ['ins_tel_celular', 'ins_tel_comercial'], true)) {
+                    $digits = preg_replace('/\D+/', '', $val);
+                    $val = $digits ? ('+' . $digits) : null;
+                }
+
             }
 
             if (is_array($val)) {
@@ -244,7 +323,6 @@ class AttendeeAreaController extends Controller
                 continue;
             }
 
-            // coluna física
             if (in_array($key, $fillable, true)) {
                 $before = $original[$key] ?? null;
                 $registration->{$key} = $val;
@@ -254,7 +332,6 @@ class AttendeeAreaController extends Controller
                 continue;
             }
 
-            // fallback JSON
             $before = $insDados[$key] ?? null;
             if ($val === null) {
                 unset($insDados[$key]);
@@ -276,5 +353,27 @@ class AttendeeAreaController extends Controller
         return redirect()
             ->route('public.attendee.edit', $event)
             ->with('ok', 'Dados atualizados com sucesso!');
+    }
+
+    private function isValidCpfDigits(string $cpfDigits): bool
+    {
+        if (strlen($cpfDigits) !== 11) return false;
+        if (preg_match('/^(\d)\1{10}$/', $cpfDigits)) return false;
+
+        $sum = 0;
+        for ($i = 0; $i < 9; $i++) {
+            $sum += ((int)$cpfDigits[$i]) * (10 - $i);
+        }
+        $d1 = ($sum * 10) % 11;
+        if ($d1 === 10) $d1 = 0;
+        if ($d1 !== (int)$cpfDigits[9]) return false;
+
+        $sum = 0;
+        for ($i = 0; $i < 10; $i++) {
+            $sum += ((int)$cpfDigits[$i]) * (11 - $i);
+        }
+        $d2 = ($sum * 10) % 11;
+        if ($d2 === 10) $d2 = 0;
+        return $d2 === (int)$cpfDigits[10];
     }
 }

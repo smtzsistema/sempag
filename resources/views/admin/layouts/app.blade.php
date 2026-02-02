@@ -28,20 +28,23 @@
     $is = fn($pattern) => request()->routeIs($pattern);
 @endphp
 
-<!-- Mobile overlay -->
-<div id="adminMobileOverlay" class="fixed inset-0 z-40 hidden bg-black/60 md:hidden" onclick="adminCloseSidebar()"></div>
+    <!-- Mobile overlay -->
+<div id="adminMobileOverlay" class="fixed inset-0 z-40 hidden bg-black/60 md:hidden"
+     onclick="adminCloseSidebar()"></div>
 
 <div class="min-h-screen md:flex">
 
     <!-- Sidebar -->
-    <aside id="adminSidebar" class="fixed inset-y-0 left-0 z-50 hidden w-80 shrink-0 border-r border-zinc-800 bg-zinc-950 md:static md:block">
+    <aside id="adminSidebar"
+           class="fixed inset-y-0 left-0 z-50 hidden w-80 shrink-0 border-r border-zinc-800 bg-zinc-950 md:static md:block">
         <div class="p-5">
             <div class="flex items-start justify-between gap-3">
                 <div>
                     <div class="text-xs text-zinc-400">Admin</div>
                     <div class="text-lg font-semibold leading-tight">{{ $event->name }}</div>
                 </div>
-                <button class="md:hidden rounded-xl border border-zinc-800 bg-zinc-900 px-3 py-2 text-sm" onclick="adminCloseSidebar()">
+                <button class="md:hidden rounded-xl border border-zinc-800 bg-zinc-900 px-3 py-2 text-sm"
+                        onclick="adminCloseSidebar()">
                     Fechar
                 </button>
             </div>
@@ -74,25 +77,25 @@
 
                 <!-- Configurações -->
                 @can('system.manage')
-                <div>
-                    <div class="text-xs font-semibold text-zinc-400 tracking-wide">CONFIGURAÇÕES DE SISTEMA</div>
-                    <div class="mt-2 space-y-2">
-                        @php($i = $navItem('Configuração do Evento', route('admin.system.event.index', $event), $is('admin.system.event.*')))
-                        <a href="{{ $i['href'] }}" class="{{ $i['cls'] }}"><span>{{ $i['label'] }}</span></a>
-                        @php($i = $navItem('Configuração de categorias', route('admin.system.categories.index', $event), $is('admin.system.categories.*')))
-                        <a href="{{ $i['href'] }}" class="{{ $i['cls'] }}"><span>{{ $i['label'] }}</span></a>
+                    <div>
+                        <div class="text-xs font-semibold text-zinc-400 tracking-wide">CONFIGURAÇÕES DE SISTEMA</div>
+                        <div class="mt-2 space-y-2">
+                            @php($i = $navItem('Configuração do Evento', route('admin.system.event.index', $event), $is('admin.system.event.*')))
+                            <a href="{{ $i['href'] }}" class="{{ $i['cls'] }}"><span>{{ $i['label'] }}</span></a>
+                            @php($i = $navItem('Configuração de categorias', route('admin.system.categories.index', $event), $is('admin.system.categories.*')))
+                            <a href="{{ $i['href'] }}" class="{{ $i['cls'] }}"><span>{{ $i['label'] }}</span></a>
 
-                        @php($i = $navItem('Configuração de fichas', route('admin.system.forms.index', $event), $is('admin.system.forms.*')))
-                        <a href="{{ $i['href'] }}" class="{{ $i['cls'] }}"><span>{{ $i['label'] }}</span></a>
+                            @php($i = $navItem('Configuração de fichas', route('admin.system.forms.index', $event), $is('admin.system.forms.*')))
+                            <a href="{{ $i['href'] }}" class="{{ $i['cls'] }}"><span>{{ $i['label'] }}</span></a>
 
-                        @php($i = $navItem('Cartas de confirmação', route('admin.system.letters.index', $event), $is('admin.system.letters.*')))
-                        <a href="{{ $i['href'] }}" class="{{ $i['cls'] }}"><span>{{ $i['label'] }}</span></a>
-                        @php($i = $navItem('Grupos de Permissões', route('admin.system.roles.index', $event), $is('admin.system.roles.*')))
-                        <a href="{{ $i['href'] }}" class="{{ $i['cls'] }}"><span>{{ $i['label'] }}</span></a>
-                        @php($i = $navItem('Credenciais', route('admin.system.credentials.index', $event), $is('admin.system.credentials.*')))
-                        <a href="{{ $i['href'] }}" class="{{ $i['cls'] }}"><span>{{ $i['label'] }}</span></a>
+                            @php($i = $navItem('Cartas de confirmação', route('admin.system.letters.index', $event), $is('admin.system.letters.*')))
+                            <a href="{{ $i['href'] }}" class="{{ $i['cls'] }}"><span>{{ $i['label'] }}</span></a>
+                            @php($i = $navItem('Grupos de Permissões', route('admin.system.roles.index', $event), $is('admin.system.roles.*')))
+                            <a href="{{ $i['href'] }}" class="{{ $i['cls'] }}"><span>{{ $i['label'] }}</span></a>
+                            @php($i = $navItem('Credenciais', route('admin.system.credentials.index', $event), $is('admin.system.credentials.*')))
+                            <a href="{{ $i['href'] }}" class="{{ $i['cls'] }}"><span>{{ $i['label'] }}</span></a>
+                        </div>
                     </div>
-                </div>
                 @endcan
 
                 <!-- Inscrições -->
@@ -106,7 +109,8 @@
 
                         @can('registrations.export')
                             @php($i = $navItem('Exportar relatório (CSV)', '#', false))
-                            <button type="button" onclick="adminOpenGlobalExport()" class="{{ $i['cls'] }} w-full text-left">
+                            <button type="button" onclick="adminOpenGlobalExport()"
+                                    class="{{ $i['cls'] }} w-full text-left">
                                 <span>{{ $i['label'] }}</span>
                             </button>
                         @endcan
@@ -127,52 +131,53 @@
 
                 <!-- Estatísticas -->
                 @can('stats.view')
-                <div>
-                    <div class="text-xs font-semibold text-zinc-400 tracking-wide">ESTATÍSTICAS</div>
-                    <div class="mt-2 space-y-2">
-                        @php($i = $navItem('Painel de estatísticas', route('admin.stats.index', $event), $is('admin.stats.*')))
-                        <a href="{{ $i['href'] }}" class="{{ $i['cls'] }}">
-                            <span>{{ $i['label'] }}</span>
-                        </a>
+                    <div>
+                        <div class="text-xs font-semibold text-zinc-400 tracking-wide">ESTATÍSTICAS</div>
+                        <div class="mt-2 space-y-2">
+                            @php($i = $navItem('Painel de estatísticas', route('admin.stats.index', $event), $is('admin.stats.*')))
+                            <a href="{{ $i['href'] }}" class="{{ $i['cls'] }}">
+                                <span>{{ $i['label'] }}</span>
+                            </a>
+                        </div>
                     </div>
-                </div>
                 @endcan
 
                 <!-- Usuários -->
                 @can('users.manage')
-                <div>
-                    <div class="text-xs font-semibold text-zinc-400 tracking-wide">USUÁRIOS</div>
-                    <div class="mt-2 space-y-2">
-                        @php($i = $navItem('Novo usuário', route('admin.users.create', $event), $is('admin.users.create')))
-                        <a href="{{ $i['href'] }}" class="{{ $i['cls'] }}">
-                            <span>{{ $i['label'] }}</span>
-                        </a>
+                    <div>
+                        <div class="text-xs font-semibold text-zinc-400 tracking-wide">USUÁRIOS</div>
+                        <div class="mt-2 space-y-2">
+                            @php($i = $navItem('Novo usuário', route('admin.users.create', $event), $is('admin.users.create')))
+                            <a href="{{ $i['href'] }}" class="{{ $i['cls'] }}">
+                                <span>{{ $i['label'] }}</span>
+                            </a>
 
-                        @php($i = $navItem('Lista de usuários', route('admin.users.index', $event), $is('admin.users.*')))
-                        <a href="{{ $i['href'] }}" class="{{ $i['cls'] }}">
-                            <span>{{ $i['label'] }}</span>
-                        </a>
+                            @php($i = $navItem('Lista de usuários', route('admin.users.index', $event), $is('admin.users.*')))
+                            <a href="{{ $i['href'] }}" class="{{ $i['cls'] }}">
+                                <span>{{ $i['label'] }}</span>
+                            </a>
+                        </div>
                     </div>
-                </div>
                 @endcan
 
                 <!-- Exportar/Importar -->
                 @can('sync.manage')
-                <div>
-                    <div class="text-xs font-semibold text-zinc-400 tracking-wide">EXPORTAR / IMPORTAR</div>
-                    <div class="mt-2 space-y-2">
-                        @php($i = $navItem('Sincronização', route('admin.sync.index', $event), $is('admin.sync.*')))
-                        <a href="{{ $i['href'] }}" class="{{ $i['cls'] }}">
-                            <span>{{ $i['label'] }}</span>
-                        </a>
+                    <div>
+                        <div class="text-xs font-semibold text-zinc-400 tracking-wide">EXPORTAR / IMPORTAR</div>
+                        <div class="mt-2 space-y-2">
+                            @php($i = $navItem('Sincronização', route('admin.sync.index', $event), $is('admin.sync.*')))
+                            <a href="{{ $i['href'] }}" class="{{ $i['cls'] }}">
+                                <span>{{ $i['label'] }}</span>
+                            </a>
+                        </div>
                     </div>
-                </div>
                 @endcan
 
                 <div class="pt-2 border-t border-zinc-800">
                     <form method="POST" action="{{ route('admin.logout', $event) }}">
                         @csrf
-                        <button class="w-full rounded-xl bg-zinc-900 hover:bg-zinc-800 border border-zinc-800 px-4 py-2 text-sm">
+                        <button
+                            class="w-full rounded-xl bg-zinc-900 hover:bg-zinc-800 border border-zinc-800 px-4 py-2 text-sm">
                             Sair
                         </button>
                     </form>
@@ -189,7 +194,8 @@
         <div class="sticky top-0 z-30 border-b border-zinc-800 bg-zinc-950/70 backdrop-blur">
             <div class="mx-auto max-w-7xl px-4 sm:px-6 py-4 flex items-center justify-between gap-3">
                 <div class="flex items-center gap-3">
-                    <button class="md:hidden rounded-xl border border-zinc-800 bg-zinc-900 px-3 py-2 text-sm" onclick="adminOpenSidebar()">
+                    <button class="md:hidden rounded-xl border border-zinc-800 bg-zinc-900 px-3 py-2 text-sm"
+                            onclick="adminOpenSidebar()">
                         Menu
                     </button>
 
@@ -218,15 +224,15 @@
 <script src="https://cdn.jsdelivr.net/npm/flatpickr/dist/l10n/pt.js"></script>
 
 <script>
-document.addEventListener('DOMContentLoaded', () => {
-    if (window.flatpickr) {
-        flatpickr('.js-date', {
-            dateFormat: 'Y-m-d',
-            locale: 'pt',
-            allowInput: true
-        });
-    }
-});
+    document.addEventListener('DOMContentLoaded', () => {
+        if (window.flatpickr) {
+            flatpickr('.js-date', {
+                dateFormat: 'Y-m-d',
+                locale: 'pt',
+                allowInput: true
+            });
+        }
+    });
 </script>
 
 {{-- Modal GLOBAL export CSV (categoria + status) --}}
@@ -260,19 +266,27 @@ document.addEventListener('DOMContentLoaded', () => {
                         <label class="block text-xs text-zinc-400">Categorias (multi)</label>
                         <div class="flex items-center gap-2">
                             <button type="button" class="text-xs text-emerald-300 hover:underline"
-                                    onclick="adminSelAll('admin_modal_cat_ids')">Selecionar todas</button>
+                                    onclick="adminSelAll('admin_modal_cat_ids')">Selecionar todas
+                            </button>
                             <span class="text-zinc-700">•</span>
                             <button type="button" class="text-xs text-zinc-300 hover:underline"
-                                    onclick="adminSelNone('admin_modal_cat_ids')">Limpar</button>
+                                    onclick="adminSelNone('admin_modal_cat_ids')">Limpar
+                            </button>
                         </div>
                     </div>
 
-                    <select id="admin_modal_cat_ids" name="cat_ids[]" multiple size="8"
-                            class="mt-2 w-full rounded-2xl bg-zinc-950 border border-zinc-800 px-3 py-2">
+                    <div id="admin_modal_cat_ids"
+                         class="mt-2 w-full rounded-2xl bg-zinc-950 border border-zinc-800 p-2 max-h-64 overflow-auto">
                         @foreach(($categories ?? \App\Models\Category::where('eve_id', $event->id)->orderBy('cat_nome')->get()) as $c)
-                            <option value="{{ $c->cat_id }}">{{ $c->cat_nome }} ({{ $c->cat_id }})</option>
+                            <label
+                                class="flex items-center gap-2 rounded-xl px-2 py-2 hover:bg-zinc-900/60 cursor-pointer">
+                                <input type="checkbox" name="cat_ids[]" value="{{ $c->cat_id }}"
+                                       class="h-4 w-4 accent-emerald-500">
+                                <span class="text-sm text-zinc-200">{{ $c->cat_nome }} <span
+                                        class="text-xs text-zinc-500">({{ $c->cat_id }})</span></span>
+                            </label>
                         @endforeach
-                    </select>
+                    </div>
                 </div>
 
                 <div class="md:col-span-5">
@@ -280,26 +294,32 @@ document.addEventListener('DOMContentLoaded', () => {
                         <label class="block text-xs text-zinc-400">Status (multi)</label>
                         <div class="flex items-center gap-2">
                             <button type="button" class="text-xs text-emerald-300 hover:underline"
-                                    onclick="adminSelAll('admin_modal_statuses')">Selecionar todos</button>
+                                    onclick="adminSelAll('admin_modal_statuses')">Selecionar todos
+                            </button>
                             <span class="text-zinc-700">•</span>
                             <button type="button" class="text-xs text-zinc-300 hover:underline"
-                                    onclick="adminSelNone('admin_modal_statuses')">Limpar</button>
+                                    onclick="adminSelNone('admin_modal_statuses')">Limpar
+                            </button>
                         </div>
                     </div>
 
-                    <select id="admin_modal_statuses" name="statuses[]" multiple size="8"
-                            class="mt-2 w-full rounded-2xl bg-zinc-950 border border-zinc-800 px-3 py-2">
+                    <div id="admin_modal_statuses"
+                         class="mt-2 w-full rounded-2xl bg-zinc-950 border border-zinc-800 p-2 max-h-64 overflow-auto">
                         @foreach((['S'=>'Aprovados','E'=>'Em análise','R'=>'Reprovados','N'=>'Excluídos']) as $k => $label)
-                            <option value="{{ $k }}" @selected(in_array($k, ['S','E','R'], true))>
-                                {{ $label }} ({{ $k }})
-                            </option>
+                            <label
+                                class="flex items-center gap-2 rounded-xl px-2 py-2 hover:bg-zinc-900/60 cursor-pointer">
+                                <input type="checkbox" name="statuses[]" value="{{ $k }}"
+                                       @checked(in_array($k, ['S','E','R'], true)) class="h-4 w-4 accent-emerald-500">
+                                <span class="text-sm text-zinc-200">{{ $label }} <span class="text-xs text-zinc-500">({{ $k }})</span></span>
+                            </label>
                         @endforeach
-                    </select>
+                    </div>
                 </div>
 
                 <div class="md:col-span-12 flex flex-col sm:flex-row gap-3 sm:items-center sm:justify-between pt-2">
                     <div class="text-xs text-zinc-500">CSV em UTF-8 com separador ";" (Excel PT-BR)</div>
-                    <button class="rounded-xl bg-emerald-600 hover:bg-emerald-500 text-zinc-950 font-semibold px-5 py-2 transition">
+                    <button
+                        class="rounded-xl bg-emerald-600 hover:bg-emerald-500 text-zinc-950 font-semibold px-5 py-2 transition">
                         Baixar CSV
                     </button>
                 </div>
@@ -307,7 +327,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
             <div class="mt-4 text-xs text-zinc-500">
                 Precisa de mais opções? Você também pode ir em
-                <a class="text-emerald-300 hover:underline" href="{{ route('admin.registrations.exports.index', $event) }}">
+                <a class="text-emerald-300 hover:underline"
+                   href="{{ route('admin.registrations.exports.index', $event) }}">
                     Exportar relatório (CSV)
                 </a>.
             </div>
@@ -316,35 +337,51 @@ document.addEventListener('DOMContentLoaded', () => {
 </div>
 
 <script>
-    function adminOpenGlobalExport(){
+    function adminOpenGlobalExport() {
         const m = document.getElementById('adminGlobalExportModal');
-        if(!m) return;
+        if (!m) return;
 
         // se estiver no mobile com sidebar aberta, fecha pra não virar bagunça
-        try { adminCloseSidebar(); } catch(e) {}
+        try {
+            adminCloseSidebar();
+        } catch (e) {
+        }
 
         m.classList.remove('hidden');
         document.body.classList.add('overflow-hidden');
     }
 
-    function adminCloseGlobalExport(){
+    function adminCloseGlobalExport() {
         const m = document.getElementById('adminGlobalExportModal');
-        if(!m) return;
+        if (!m) return;
         m.classList.add('hidden');
         document.body.classList.remove('overflow-hidden');
     }
 
-    function adminSelAll(id){
+    function adminSelAll(id) {
         const el = document.getElementById(id);
-        if(!el) return;
-        Array.from(el.options).forEach(o => o.selected = true);
+        if (!el) return;
+
+        if (el.tagName === 'SELECT') {
+            Array.from(el.options).forEach(o => o.selected = true);
+            return;
+        }
+
+        el.querySelectorAll('input[type="checkbox"]').forEach(cb => cb.checked = true);
     }
 
-    function adminSelNone(id){
+    function adminSelNone(id) {
         const el = document.getElementById(id);
-        if(!el) return;
-        Array.from(el.options).forEach(o => o.selected = false);
+        if (!el) return;
+
+        if (el.tagName === 'SELECT') {
+            Array.from(el.options).forEach(o => o.selected = false);
+            return;
+        }
+
+        el.querySelectorAll('input[type="checkbox"]').forEach(cb => cb.checked = false);
     }
+
 
     document.addEventListener('keydown', (e) => {
         if (e.key === 'Escape') adminCloseGlobalExport();
