@@ -473,6 +473,17 @@ sempag
 │  ├─ form_ativo
 │  ├─ created_at
 │  └─ updated_at
+├─ tbl_galeria
+│  ├─ gal_id
+│  ├─ ins_id
+│  ├─ gal_url
+│  ├─ gal_date
+│  ├─ gal_status
+│  ├─ gal_ativo
+│  ├─ gal_rotate
+│  ├─ gal_date_status
+│  ├─ gal_atualizado
+│  └─ gal_local
 ├─ tbl_isncricao
 │  ├─ ins_id
 │  ├─ eve_id
