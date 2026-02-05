@@ -372,9 +372,16 @@ sempag
 │  ├─ migration
 │  └─ batch
 ├─ password_reset_tokens
+│  ├─ prt_id 
+│  ├─ org_id
+│  ├─ eve_id
 │  ├─ email
 │  ├─ token
-│  └─ created_at
+│  ├─ created_at
+│  ├─ clicked_at
+│  ├─ used_at
+│  ├─ ip
+│  └─ user_agent
 ├─ tbl_cartas
 │  ├─ car_id
 │  ├─ eve_id
