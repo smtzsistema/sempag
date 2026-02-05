@@ -21,7 +21,7 @@
         </div>
     </div>
 @endif
-<div class="min-h-screen flex items-center justify-center p-6">
+<div class="min-h-[50vh] flex items-center justify-center p-6">
     <div class="w-full max-w-md">
         <div class="rounded-2xl bg-zinc-900 border border-zinc-800 p-6 shadow-lg">
             <h1 class="text-2xl font-bold">Já sou inscrito</h1>
