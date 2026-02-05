@@ -63,7 +63,6 @@
                 <option value="0" @selected((string)$currentEditable === '0')>Não</option>
                 <option value="1" @selected((string)$currentEditable === '1')>Sim</option>
             </select>
-            <div class="mt-1 text-xs text-zinc-400">Se <b>Sim</b>, salva <code>S</code> em <code>tbl_ficha.fic_edita</code>; se <b>Não</b>, salva <code>N</code>.</div>
         </div>
 
         <div class="hidden sm:block"></div>

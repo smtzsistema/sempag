@@ -62,10 +62,6 @@
                 </label>
             </div>
         </div>
-
-        <p class="mt-4 text-sm text-zinc-400">
-            A versão (<span class="text-zinc-200">form_versao</span>) é incrementada automaticamente por categoria.
-        </p>
     </div>
 
     <div class="flex flex-wrap gap-3">

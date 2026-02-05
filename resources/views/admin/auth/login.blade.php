@@ -46,10 +46,6 @@
                         class="w-full rounded-xl bg-emerald-600 hover:bg-emerald-500 text-zinc-950 font-semibold py-2.5 transition">
                     Entrar
                 </button>
-
-                <p class="text-xs text-zinc-500">
-                    Dica demo: <span class="text-zinc-300">admin@demo.com</span> / <span class="text-zinc-300">123456</span>
-                </p>
             </form>
         </div>
     </div>

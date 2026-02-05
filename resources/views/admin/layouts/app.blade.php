@@ -325,7 +325,7 @@
                         </div>
                         <button
                             class="rounded-xl bg-emerald-600 hover:bg-emerald-500 text-zinc-950 font-semibold px-5 py-2 transition">
-                            Baixar CSV
+                            Baixar
                         </button>
                     </div>
                 </form>
