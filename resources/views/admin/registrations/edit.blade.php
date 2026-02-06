@@ -125,6 +125,7 @@
                                value="{{ old('ins_motivo', $registration->ins_motivo) }}"
                                class="w-full rounded-xl bg-zinc-950 border border-zinc-800 px-3 py-2"
                                placeholder="Ex: Dados incompletos">
+                        <span> ⚠️ ATENÇÃO - O PARTICIPANTE PODERÁ LER O MOTIVO DA REPROVAÇÃO, <br>SEJA AMIGAVEL 🙂</span>
                     </div>
                 @endcan
 

@@ -16,9 +16,9 @@ return new class extends Migration {
                 ->references('eve_id')->on('tbl_eventos')
                 ->cascadeOnDelete();
 
-            $table->unsignedBigInteger('cat_id')->index()->comment('Id da categoria (tbl_categorias.cat_id)');
+            $table->unsignedBigInteger('cat_id')->index()->comment('Id da categoria (tbl_categoria.cat_id)');
             $table->foreign('cat_id')
-                ->references('cat_id')->on('tbl_categorias')
+                ->references('cat_id')->on('tbl_categoria')
                 ->cascadeOnDelete();
 
             $table->unsignedBigInteger('form_id')->index()->comment('Id do formulário usado (tbl_formularios.form_id)');

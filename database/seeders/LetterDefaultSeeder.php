@@ -19,11 +19,11 @@ class LetterDefaultSeeder extends Seeder
         }
 
         // tenta pegar uma categoria do evento (prioriza id 1)
-        $catId = DB::table('tbl_categorias')
+        $catId = DB::table('tbl_categoria')
             ->where('eve_id', $eventId)
             ->where('cat_id', 1)
             ->value('cat_id')
-            ?? DB::table('tbl_categorias')->where('eve_id', $eventId)->min('cat_id');
+            ?? DB::table('tbl_categoria')->where('eve_id', $eventId)->min('cat_id');
 
         if (!$catId) {
             // sem categoria, não faz nada

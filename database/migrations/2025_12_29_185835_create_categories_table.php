@@ -7,7 +7,7 @@ use Illuminate\Support\Facades\Schema;
 return new class extends Migration {
     public function up(): void
     {
-        Schema::create('tbl_categorias', function (Blueprint $table) {
+        Schema::create('tbl_categoria', function (Blueprint $table) {
             $table->id('cat_id')->comment('Id da categoria');
 
             $table->unsignedBigInteger('eve_id')->index()->comment('Id do evento (tbl_eventos.eve_id)');
@@ -36,6 +36,6 @@ return new class extends Migration {
 
     public function down(): void
     {
-        Schema::dropIfExists('tbl_categorias');
+        Schema::dropIfExists('tbl_categoria');
     }
 };
