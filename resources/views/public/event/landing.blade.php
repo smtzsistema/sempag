@@ -1,12 +1,15 @@
 <!doctype html>
-<html lang="pt-br">
+<html lang="pt-br" class="{{ request()->cookie('theme','dark') === 'dark' ? 'dark' : '' }}">
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>{{ $event->name }}</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="{{ asset('assets/theme.css') }}">
 </head>
 <body class="bg-zinc-950 text-zinc-100">
+
+<x-theme-toggle />
     @if($event->banner_path)
         <div class="mx-auto max-w-[1200px]">
             <div class="w-full h-[200px] flex items-center justify-center rounded-2xl bg-zinc-950">

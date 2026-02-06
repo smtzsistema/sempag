@@ -1,0 +1,154 @@
+/*
+  Theme bridge (light/dark):
+  - DARK: mantém exatamente como está hoje (Tailwind zinc)
+  - LIGHT: converte as "superfícies zinc" (bg-zinc-950/900/800) para branco/cinza claro
+           e ajusta textos zinc para tons escuros.
+  - Não mexe em cores de marca (emerald/amber/red/sky etc).
+*/
+
+html.dark { color-scheme: dark; }
+html:not(.dark) { color-scheme: light; }
+
+/* Base do claro */
+html:not(.dark) body {
+  background: #f8fafc;       /* slate-50 */
+  color: #0f172a;            /* slate-900 */
+}
+
+/* =========================================
+   SUPERFÍCIES (cards, header, sidebar, blocos)
+   só para zinc, pra não zoar botões coloridos
+   ========================================= */
+html:not(.dark) .bg-zinc-950,
+html:not(.dark) .bg-zinc-950\/40,
+html:not(.dark) .bg-zinc-950\/50,
+html:not(.dark) .bg-zinc-900,
+html:not(.dark) .bg-zinc-900\/25,
+html:not(.dark) .bg-zinc-900\/60,
+html:not(.dark) .bg-zinc-800,
+html:not(.dark) .bg-zinc-800\/50 {
+  background-color: #ffffff !important;
+}
+
+/* Alguns lugares usam "bg-zinc-900/50" etc (safe) */
+html:not(.dark) [class*="bg-zinc-950/"],
+html:not(.dark) [class*="bg-zinc-900/"],
+html:not(.dark) [class*="bg-zinc-800/"] {
+  background-color: #ffffff !important;
+}
+
+/* Bordas zinc mais visíveis no claro */
+html:not(.dark) .border-zinc-950,
+html:not(.dark) .border-zinc-900,
+html:not(.dark) .border-zinc-800,
+html:not(.dark) .border-zinc-700 {
+  border-color: #e2e8f0 !important; /* slate-200 */
+}
+
+/* =========================================
+   TEXTOS (zinc) — deixa legível no claro
+   ========================================= */
+html:not(.dark) .text-white,
+html:not(.dark) .text-zinc-50,
+html:not(.dark) .text-zinc-100,
+html:not(.dark) .text-zinc-200,
+html:not(.dark) .text-zinc-300 {
+  color: #0f172a !important; /* slate-900 */
+}
+
+html:not(.dark) .text-zinc-400 {
+  color: #334155 !important; /* slate-700 */
+}
+
+html:not(.dark) .text-zinc-500 {
+  color: #475569 !important; /* slate-600 */
+}
+
+html:not(.dark) .text-zinc-600 {
+  color: #64748b !important; /* slate-500 */
+}
+
+/* Links que estavam apagados */
+html:not(.dark) a.text-zinc-400,
+html:not(.dark) a.text-zinc-300 {
+  color: #0f172a !important;
+}
+html:not(.dark) a.text-zinc-400:hover,
+html:not(.dark) a.text-zinc-300:hover {
+  color: #020617 !important; /* slate-950 */
+}
+
+/* Tabelas/divisórias */
+html:not(.dark) .divide-zinc-800 > :not([hidden]) ~ :not([hidden]),
+html:not(.dark) .divide-zinc-700 > :not([hidden]) ~ :not([hidden]) {
+  border-color: #e2e8f0 !important;
+}
+
+/* Inputs */
+html:not(.dark) input,
+html:not(.dark) select,
+html:not(.dark) textarea {
+  color: #0f172a !important;
+  background-color: #ffffff !important;
+}
+html:not(.dark) input::placeholder,
+html:not(.dark) textarea::placeholder {
+  color: #64748b !important; /* slate-500 */
+}
+
+/* Shadows no claro mais suaves */
+html:not(.dark) .shadow-lg,
+html:not(.dark) .shadow-xl {
+  box-shadow: 0 10px 15px -3px rgba(15, 23, 42, 0.08),
+              0 4px 6px -4px rgba(15, 23, 42, 0.08) !important;
+}
+
+/* SweetAlert2 (se usar) */
+html:not(.dark) .swal2-popup {
+  background: #ffffff !important;
+  color: #0f172a !important;
+}
+/* =========================================
+   BADGES / CHIPS (verde/amarelo) no LIGHT
+   deixa mais forte sem mexer no dark
+   ========================================= */
+
+/* Verde (OK / Instantâneo) */
+html:not(.dark) .bg-emerald-900\/25,
+html:not(.dark) .bg-emerald-900\/20,
+html:not(.dark) .bg-emerald-900\/10 {
+  background-color: rgba(16, 185, 129, 0.18) !important; /* emerald-500 */
+}
+html:not(.dark) .border-emerald-800,
+html:not(.dark) .border-emerald-700 {
+  border-color: rgba(16, 185, 129, 0.55) !important;
+}
+html:not(.dark) .text-emerald-200,
+html:not(.dark) .text-emerald-300,
+html:not(.dark) .text-emerald-400 {
+  color: #047857 !important; /* emerald-700 */
+}
+
+/* Amarelo/Laranja (Atenção / Pendente / Sujeito à aprovação) */
+html:not(.dark) .bg-amber-900\/25,
+html:not(.dark) .bg-amber-900\/20,
+html:not(.dark) .bg-amber-900\/10,
+html:not(.dark) .bg-orange-900\/25,
+html:not(.dark) .bg-orange-900\/20,
+html:not(.dark) .bg-orange-900\/10 {
+  background-color: rgba(245, 158, 11, 0.20) !important; /* amber-500 */
+}
+html:not(.dark) .border-amber-800,
+html:not(.dark) .border-amber-700,
+html:not(.dark) .border-orange-800,
+html:not(.dark) .border-orange-700 {
+  border-color: rgba(245, 158, 11, 0.60) !important;
+}
+html:not(.dark) .text-amber-200,
+html:not(.dark) .text-amber-300,
+html:not(.dark) .text-amber-400,
+html:not(.dark) .text-orange-200,
+html:not(.dark) .text-orange-300,
+html:not(.dark) .text-orange-400 {
+  color: #b45309 !important; /* amber-700 */
+}

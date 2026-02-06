@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="pt-br">
+<html lang="pt-br" class="{{ request()->cookie('theme','dark') === 'dark' ? 'dark' : '' }}">
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -7,8 +7,11 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
     <title>@yield('title', 'Admin') • {{ $event->name ?? 'Evento' }}</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="{{ asset('assets/theme.css') }}">
 </head>
 <body class="bg-zinc-950 text-zinc-100">
+
+<x-theme-toggle />
 
 @php
     $navItem = function (string $label, string $href, bool $active = false, ?string $badge = null) {

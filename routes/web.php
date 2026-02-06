@@ -7,6 +7,7 @@ use App\Http\Controllers\Public\RegistrationController;
 use App\Http\Controllers\Public\AttendeeAccessController;
 use App\Http\Controllers\Public\AttendeeAuthController;
 use App\Http\Controllers\Public\AttendeeAreaController;
+use App\Http\Controllers\ThemeController;
 use App\Http\Controllers\Public\AttendeeCredentialController;
 
 use App\Http\Controllers\Admin\AdminAuthController;
@@ -437,3 +438,9 @@ Route::prefix('/e/{event}/admin')->name('admin.')->group(function () {
             ->name('users.reset_password');
     });
 });
+
+// Tema (claro/escuro)
+Route::post('/theme/toggle', [ThemeController::class, 'toggle'])->name('theme.toggle');
+Route::post('/theme/{theme}', [ThemeController::class, 'set'])
+    ->whereIn('theme', ['dark', 'light'])
+    ->name('theme.set');

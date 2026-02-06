@@ -1,10 +1,11 @@
 <!doctype html>
-<html lang="pt-br">
+<html lang="pt-br" class="{{ request()->cookie('theme','dark') === 'dark' ? 'dark' : '' }}">
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Imprimir credencial - {{ $event->name }}</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="{{ asset('assets/theme.css') }}">
 
     <style>
         @page {
@@ -24,6 +25,9 @@
     </style>
 </head>
 <body class="bg-zinc-950 text-zinc-100">
+
+<x-theme-toggle />
+
 <div class="max-w-5xl mx-auto p-6 no-print">
     <div class="rounded-2xl bg-zinc-900 border border-zinc-800 p-6 flex items-start justify-between gap-4">
         <div>
