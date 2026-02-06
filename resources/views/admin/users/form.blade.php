@@ -31,7 +31,6 @@
           action="{{ $mode === 'create' ? route('admin.users.store', $event) : route('admin.users.update', [$event, $user]) }}"
           class="rounded-2xl border border-zinc-800 bg-zinc-900/40 p-5 space-y-5">
         @csrf
-        @if($mode === 'edit') @method('PUT') @endif
 
         <div>
             <label class="block text-sm text-zinc-300 mb-2">Nome</label>
