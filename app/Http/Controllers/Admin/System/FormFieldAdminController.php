@@ -197,7 +197,7 @@ class FormFieldAdminController extends Controller
         return $opts ?: null;
     }
 
-    public function addPreset(Event $event, Form $form, FieldPreset $preset)
+    public function addPreset(Request $request, Event $event, Form $form, FieldPreset $preset)
     {
         // garante que o form pertence ao evento
         abort_unless((int)$form->eve_id === (int)$event->eve_id, 404);
@@ -213,10 +213,15 @@ class FormFieldAdminController extends Controller
 
         $nextOrder = (int)(FormField::where('form_id', $form->form_id)->max('fic_ordem') ?? 0) + 10;
 
+        $key = $request->input('key_override') ?: $preset->key;
+        $label = $request->input('label_override') ?: $preset->label;
+
         // cria via relação pra garantir o form_id automaticamente
         $form->fields()->create([
             'fic_nome' => $preset->fic_nome,          // chave técnica
-            'fic_label' => $preset->fic_label,        // label
+            'fic_label' => $label,        // label
+            'key' => $key,
+            'type' => $preset->type,
             'fic_tipo' => $preset->fic_tipo,          // tipo
             'fic_opcoes' => $preset->fic_opcoes,      // json options
             'fic_placeholder' => $preset->fic_placeholder,
