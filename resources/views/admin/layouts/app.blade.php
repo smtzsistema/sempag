@@ -114,11 +114,6 @@
                                 <span>{{ $i['label'] }}</span>
                             </button>
                         @endcan
-
-                        @can('registrations.view')
-                            @php($i = $navItem('Busca inscrito', route('admin.registrations.search', $event), $is('admin.registrations.search')))
-                            <a href="{{ $i['href'] }}" class="{{ $i['cls'] }}"><span>{{ $i['label'] }}</span></a>
-                        @endcan
                         @can('registrations.salas')
                             @php($i = $navItem('Lista por sala (presença)', route('admin.attendance.index', $event), $is('admin.attendance.*')))
                             <a href="{{ $i['href'] }}" class="{{ $i['cls'] }}">

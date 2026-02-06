@@ -185,12 +185,6 @@ class RegistrationExportController extends Controller
             default => '',
         };
     }
-
-    /**
-     * Tenta pegar valor no registro a partir do "key" do field.
-     * 1) tenta $r->{$key}
-     * 2) tenta $r->{"ins_{$key}"} (fallback)
-     */
     private function valueFromRegistrationByKey($r, ?string $key): string
     {
         $key = trim((string) $key);
@@ -209,12 +203,6 @@ class RegistrationExportController extends Controller
 
         return '';
     }
-
-    /**
-     * Export baseado na(s) ficha(s) (forms->fields) e usando fic_label como header.
-     * - Se $catIdsForHeader = null => usa TODAS as fichas do evento no header
-     * - Se veio array => usa só as fichas dessas categorias
-     */
     private function downloadCsvFromForms(Event $event, $query, string $baseFilename, ?array $catIdsForHeader)
     {
         // 1) Busca forms do evento (uma por categoria)
@@ -236,14 +224,6 @@ class RegistrationExportController extends Controller
             $formFieldsByCat[$catId] = $form->fields ?? collect();
         }
 
-        /**
-         * 2) Monta headers:
-         * Agrupa por key. Se uma key tiver labels diferentes, cria label1/label2/...
-         * Se labels iguais, uma coluna só.
-         *
-         * fieldIdToCol: field_id => nome da coluna no CSV
-         * headerCols: lista final ordenada das colunas da ficha
-         */
         $fieldIdToCol = [];
         $headerCols = [];
         $usedCols = [];
@@ -371,8 +351,8 @@ class RegistrationExportController extends Controller
 
                         $row['ID'] = (string) ($r->ins_id ?? $r->id ?? '');
                         $row['Categoria'] = $catNome;
-                        $row['Status (texto)'] = $self->statusLabel($r->ins_aprovado ?? null);
-                        $row['Data Cadastro'] = $this->fmtDate($r->created_at ?? null, 'd/m/Y H:i');
+                        $row['Status'] = $self->statusLabel($r->ins_aprovado ?? null);
+                        $row['Data Cadastro'] = $self->fmtDate($r->created_at ?? null, 'd/m/Y H:i');
 
                         // Preenche primeiro pelas answers
                         foreach ($r->answers as $a) {
