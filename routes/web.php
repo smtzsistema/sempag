@@ -153,10 +153,6 @@ Route::prefix('/e/{event}/admin')->name('admin.')->group(function () {
             ->middleware('permission:registrations.export')
             ->name('registrations.export_modal');
 
-        Route::get('/inscricoes/busca', [RegistrationAdminController::class, 'search'])
-            ->middleware('permission:registrations.view')
-            ->name('registrations.search');
-
         Route::get('/inscricoes/{registration:ins_token}', [RegistrationAdminController::class, 'show'])
             ->middleware('permission:registrations.view')
             ->name('registrations.show');
@@ -385,7 +381,7 @@ Route::prefix('/e/{event}/admin')->name('admin.')->group(function () {
                 Route::post('/{role}/editar', [RoleAdminController::class, 'update'])
                     ->name('update');
 
-                Route::post('/{role}/excluir', [RoleAdminController::class, 'destroy'])
+                Route::delete('/{role}/excluir', [RoleAdminController::class, 'destroy'])
                     ->name('destroy');
             });
         });
