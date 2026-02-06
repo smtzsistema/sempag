@@ -99,6 +99,9 @@ Route::middleware('attendee')->group(function () {
     Route::post('/e/{event}/minha-area/editar', [AttendeeAreaController::class, 'update'])
         ->name('public.attendee.update');
 
+    Route::post('/e/{event}/minha-area/contestar', [AttendeeAreaController::class, 'contest'])
+    ->name('public.attendee.contest');
+
     // Foto do inscrito
     Route::get('/e/{event}/minha-area/foto', [AttendeeAreaController::class, 'photo'])
         ->name('public.attendee.photo');

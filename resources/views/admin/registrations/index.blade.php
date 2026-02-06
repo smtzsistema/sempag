@@ -128,6 +128,11 @@
                             <span class="inline-flex items-center rounded-full px-2 py-0.5 text-xs border {{ $statusPill($r->ins_aprovado) }}">
                               {{ $statusLabel($r->ins_aprovado) }}
                             </span>
+                            @if(!empty($r->ins_contesta))
+                                <span class="ml-2 inline-flex items-center rounded-full px-2 py-0.5 text-xs border border-amber-700/60 bg-amber-950/30 text-amber-300">
+                                    Contestação
+                                </span>
+                            @endif
                         </td>
                         <td class="p-3 text-zinc-300">{{ optional($r->created_at)->format('d/m/Y H:i') ?? '—' }}</td>
                         <td class="p-3 text-right whitespace-nowrap">

@@ -25,7 +25,7 @@ class Registration extends Model
         'ins_cep', 'ins_endereco', 'ins_numero', 'ins_complemento', 'ins_bairro', 'ins_cidade', 'ins_estado', 'ins_pais',
         'ins_dados',
         'ins_senha', 'ins_confirmacao_assunto', 'ins_confirmacao_html',
-        'ins_aprovado_data', 'ins_motivo',
+        'ins_aprovado_data', 'ins_motivo', 'ins_contesta',
 
         // adiciona os adicionais aqui também, se você quer salvar via mass assignment:
         'ins_adicional1', 'ins_adicional2', 'ins_adicional3', 'ins_adicional4', 'ins_adicional5',

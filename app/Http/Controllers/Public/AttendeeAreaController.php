@@ -244,8 +244,8 @@ class AttendeeAreaController extends Controller
                     ->ignore($registration->ins_id, 'ins_id');
             }
 
-            $isMobile = in_array((string)$field->fic_tipo, ['mobile_int','celular_int','celular'], true)
-                || in_array((string)$field->fic_nome, ['ins_tel_celular','ins_celular','ins_whatsapp','ins_mobile'], true);
+            $isMobile = in_array((string)$field->fic_tipo, ['mobile_int', 'celular_int', 'celular'], true)
+                || in_array((string)$field->fic_nome, ['ins_tel_celular', 'ins_celular', 'ins_whatsapp', 'ins_mobile'], true);
 
             if ($isMobile) {
                 $rules["f.{$field->fic_id}"][] = function ($attribute, $value, $fail) {
@@ -268,8 +268,8 @@ class AttendeeAreaController extends Controller
                 };
             }
 
-            $isPhone = in_array((string)$field->fic_tipo, ['phone_int','telefone_int','telefone','phone'], true)
-                || in_array((string)$field->fic_nome, ['ins_tel_comercial','ins_telefone','ins_fone','ins_phone'], true);
+            $isPhone = in_array((string)$field->fic_tipo, ['phone_int', 'telefone_int', 'telefone', 'phone'], true)
+                || in_array((string)$field->fic_nome, ['ins_tel_comercial', 'ins_telefone', 'ins_fone', 'ins_phone'], true);
 
             if ($isPhone) {
                 $rules["f.{$field->fic_id}"][] = function ($attribute, $value, $fail) {
@@ -428,5 +428,32 @@ class AttendeeAreaController extends Controller
 
         return back()->with('ok', 'Foto removida.');
     }
+
+    // -----------------
+// Contestação (inscrito)
+// -----------------
+    public function contest(Request $request, Event $event)
+    {
+        $registration = $this->currentRegistration($event);
+
+        // Só deixa contestar quando estiver reprovada.
+        if ((string)($registration->ins_aprovado ?? '') !== 'R') {
+            return back()->with('error', 'Contestação disponível apenas quando a inscrição estiver reprovada.');
+        }
+
+        $data = $request->validate([
+            'ins_contesta' => ['required', 'string', 'min:10', 'max:5000'],
+        ], [
+            'ins_contesta.required' => 'Escreve a contestação aí.',
+            'ins_contesta.min' => 'Coloca pelo menos :min caracteres pra ficar claro.',
+            'ins_contesta.max' => 'A contestação ficou grande demais (máx :max caracteres).',
+        ]);
+
+        $registration->ins_contesta = trim((string)$data['ins_contesta']);
+        $registration->save();
+
+        return back()->with('ok', 'Contestação enviada.');
+    }
+
 
 }

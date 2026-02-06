@@ -187,7 +187,6 @@ class RegistrationAdminController extends Controller
 
             if ($data['ins_aprovado'] === 'S') {
                 $update['ins_aprovado_data'] = now();
-                $update['ins_motivo'] = null;
             } else {
                 $update['ins_aprovado_data'] = null;
             }
@@ -292,7 +291,6 @@ class RegistrationAdminController extends Controller
         $registration->update([
             'ins_aprovado' => 'S',
             'ins_aprovado_data' => now(),
-            'ins_motivo' => null,
         ]);
 
         RegistrationAudit::log($registration, request(), 'admin', Auth::id(), [
@@ -314,6 +312,7 @@ class RegistrationAdminController extends Controller
         $registration->update([
             'ins_aprovado' => 'R',
             'ins_motivo' => $data['ins_motivo'] ?? null,
+            'ins_contesta' => null,
             'ins_aprovado_data' => null,
         ]);
 

@@ -135,6 +135,24 @@
                                 </form>
                             @endif
 
+                            @if(!empty($registration->ins_motivo))
+                                <div class="mt-3">
+                                    <div class="text-sm text-zinc-400">Motivo</div>
+                                    <div class="text-zinc-200 whitespace-pre-line">{{ $registration->ins_motivo }}</div>
+                                </div>
+                            @endif
+
+                            @if(!empty($registration->ins_contesta))
+                                <div class="mt-3 rounded-xl border border-amber-500/25 bg-amber-500/10 p-3">
+                                    <div class="text-sm font-semibold text-amber-200">Contestação do inscrito</div>
+                                    <div class="mt-1 text-sm text-zinc-200 whitespace-pre-line">{{ $registration->ins_contesta }}</div>
+                                    <div class="mt-2 text-xs text-zinc-400">
+                                        Se você reprovar novamente, a contestação será apagada e o inscrito terá que enviar outra.
+                                    </div>
+                                </div>
+                            @endif
+
+
                             <div class="mt-4 border-t border-zinc-800 pt-4">
                                 <form method="POST"
                                       action="{{ route('admin.registrations.reject', [$event, $registration]) }}"

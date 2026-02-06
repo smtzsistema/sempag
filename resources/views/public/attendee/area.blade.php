@@ -9,7 +9,7 @@
 </head>
 <body class="bg-zinc-950 text-zinc-100">
 
-<x-theme-toggle />
+<x-theme-toggle/>
 @php
     $bannerPath = !empty($category->banner_path) ? $category->banner_path : ($event->banner_path ?? null);
 @endphp
@@ -59,11 +59,58 @@
             </div>
             <div class="text-zinc-400 text-sm mt-1">
                 {{ $registration->email ?? '—' }}
-                @if($registration->cpf) • {{ $registration->cpf }} @endif
+                @if($registration->cpf)
+                    • {{ $registration->cpf }}
+                @endif
             </div>
             <div class="text-zinc-400 text-sm mt-1">
                 Status: <span class="text-zinc-200">{{ $registration->status }}</span>
             </div>
+            @if(($registration->status ?? null) === 'Reprovada')
+                @if(!empty($registration->ins_motivo))
+                    <div class="text-zinc-400 text-sm mt-1">
+                        Motivo: <span class="text-zinc-200">{{ $registration->ins_motivo }}</span>
+                    </div>
+                @endif
+
+                <details class="mt-3 rounded-xl bg-zinc-900/30 border border-zinc-800 p-4"
+                         @if($errors->has('ins_contesta')) open @endif>
+                    <summary class="cursor-pointer select-none text-sm font-semibold text-zinc-200">
+                        Contestar reprovação
+                        @if(!empty($registration->ins_contesta))
+                            <span class="ml-2 text-xs text-emerald-200">(já enviado)</span>
+                        @endif
+                    </summary>
+
+                    <form method="POST" action="{{ route('public.attendee.contest', $event) }}" class="mt-4">
+                        @csrf
+
+                        <label class="block text-sm text-zinc-300">Sua contestação</label>
+                        <textarea
+                            name="ins_contesta"
+                            rows="5"
+                            class="mt-2 w-full rounded-xl bg-zinc-950 border border-zinc-800 p-3 text-sm text-zinc-100 placeholder:text-zinc-600 focus:outline-none focus:ring-2 focus:ring-zinc-700"
+                            placeholder="Explique por que você acha que sua inscrição deve ser reconsiderada..."
+                        >{{ old('ins_contesta', $registration->ins_contesta ?? '') }}</textarea>
+
+                        @error('ins_contesta')
+                        <div class="mt-2 text-sm text-red-200">{{ $message }}</div>
+                        @enderror
+
+                        <div class="mt-3 flex flex-wrap gap-2">
+                            <button type="submit"
+                                    class="rounded-xl bg-amber-500/15 border border-amber-500/30 px-4 py-2 text-sm font-semibold text-amber-200 hover:bg-amber-500/20 transition">
+                                Enviar contestação
+                            </button>
+                            <div class="text-xs text-zinc-500 self-center">
+                                A inscrição continua como <span class="text-zinc-300 font-semibold">Reprovada</span> até
+                                ser feita uma revisão.
+                            </div>
+                        </div>
+                    </form>
+                </details>
+            @endif
+
         </div>
 
         @if(($registration->form?->form_foto ?? 'N') === 'S')
@@ -71,7 +118,9 @@
                 <div class="flex items-center justify-between gap-3">
                     <div>
                         <div class="text-sm text-zinc-400">Minha foto</div>
-                        <div class="text-xs text-zinc-500 mt-1">Essa foto pode ser usada na credencial e é visível no admin.</div>
+                        <div class="text-xs text-zinc-500 mt-1">Essa foto pode ser usada na credencial e é visível no
+                            admin.
+                        </div>
                     </div>
                     <a href="{{ route('public.attendee.photo', $event) }}"
                        class="rounded-xl bg-zinc-900 hover:bg-zinc-800 border border-zinc-800 px-4 py-2 text-sm transition">
@@ -81,9 +130,11 @@
 
                 <div class="mt-4">
                     @if(!empty($registration->photo_url))
-                        <img src="{{ $registration->photo_url }}" alt="Foto" class="w-40 h-40 rounded-2xl object-cover border border-zinc-800">
+                        <img src="{{ $registration->photo_url }}" alt="Foto"
+                             class="w-40 h-40 rounded-2xl object-cover border border-zinc-800">
                     @else
-                        <div class="w-40 h-40 rounded-2xl bg-zinc-900/40 border border-zinc-800 flex items-center justify-center text-zinc-500 text-sm">
+                        <div
+                            class="w-40 h-40 rounded-2xl bg-zinc-900/40 border border-zinc-800 flex items-center justify-center text-zinc-500 text-sm">
                             Sem foto
                         </div>
                     @endif
