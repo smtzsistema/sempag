@@ -162,6 +162,7 @@
                                     <textarea name="ins_motivo" rows="4"
                                               class="w-full rounded-xl bg-zinc-900 border border-zinc-800 px-3 py-2 text-sm text-zinc-200"
                                               placeholder="Ex: Dados incompletos, CPF inválido, Não identificado, não qualificado...">{{ old('ins_motivo', $registration->ins_motivo) }}</textarea>
+                                    <span> ⚠️ ATENÇÃO - O PARTICIPANTE PODERÁ LER O MOTIVO DA REPROVAÇÃO, SEJA AMIGAVEL 🙂</span>
 
                                     <button
                                         class="w-full rounded-xl bg-zinc-800 hover:bg-zinc-700 border border-zinc-700 py-2.5 text-sm">
