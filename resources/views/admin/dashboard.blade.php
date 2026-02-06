@@ -39,7 +39,7 @@
                 </div>
                 @can('registrations.view')
                 <a class="text-sm text-emerald-300 hover:underline"
-                   href="{{ route('admin.registrations.index', $event) }}?category_id={{ $row->category_id }}">
+                   href="{{ route('admin.registrations.index', $event) }}?cat_id={{ $row->cat_id }}">
                     Ver inscrições
                 </a>
                 @endcan
@@ -79,7 +79,7 @@
 <div class="mt-8 rounded-2xl bg-zinc-900 border border-zinc-800">
     <div class="p-4 border-b border-zinc-800 flex items-center justify-between">
         <h2 class="text-lg font-semibold">Últimas inscrições</h2>
-        @can('registations.view')
+        @can('registrations.view')
         <a href="{{ route('admin.registrations.index', $event) }}" class="text-sm text-emerald-300 hover:underline">
             Abrir lista
         </a>
@@ -109,7 +109,7 @@
                         </span>
                     </td>
                     <td class="p-3 text-right">
-                        @can('registration.view')
+                        @can('registrations.view')
                         <a class="text-emerald-300 hover:underline"
                            href="{{ route('admin.registrations.show', [$event, $r]) }}">
                             Ver
