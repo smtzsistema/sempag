@@ -8,6 +8,12 @@
     <title>@yield('title', 'Admin') • {{ $event->name ?? 'Evento' }}</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="{{ asset('assets/theme.css') }}">
+
+    {{-- Alpine (accordion) --}}
+    <script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
+    <script defer src="https://unpkg.com/@alpinejs/collapse@3.x.x/dist/cdn.min.js"></script>
+
+    <style>[x-cloak]{display:none!important}</style>
 </head>
 <body class="bg-zinc-950 text-zinc-100">
 
@@ -29,9 +35,25 @@
     };
 
     $is = fn($pattern) => request()->routeIs($pattern);
+
+    // Qual grupo abre por padrão (pela rota atual)
+    $openGroup = 'general';
+
+if ($is('admin.system.*')) {
+    $openGroup = 'system';
+} elseif ($is('admin.registrations.*') || $is('admin.attendance.*')) {
+    $openGroup = 'registrations';
+} elseif ($is('admin.stats.*')) {
+    $openGroup = 'stats';
+} elseif ($is('admin.users.*')) {
+    $openGroup = 'users';
+} elseif ($is('admin.sync.*')) {
+    $openGroup = 'sync';
+}
+
 @endphp
 
-    <!-- Mobile overlay -->
+<!-- Mobile overlay -->
 <div id="adminMobileOverlay" class="fixed inset-0 z-40 hidden bg-black/60 md:hidden"
      onclick="adminCloseSidebar()"></div>
 
@@ -63,12 +85,38 @@
                 </a>
             </div>
 
-            <div class="mt-6 space-y-6">
+            <div class="mt-6 space-y-6"
+                 x-data="{ open: @js($openGroup) }"
+                 x-cloak
+            >
 
-                <!-- Geral -->
+                @php
+                    $groupBtn = function (string $label, string $key) {
+                        return [
+                            'label' => $label,
+                            'key' => $key,
+                            'cls' => 'w-full flex items-center justify-between gap-3 text-left rounded-xl px-3 py-2 text-xs font-semibold tracking-wide border transition
+                                     bg-zinc-950/40 border-zinc-800 text-zinc-400 hover:bg-zinc-900/60 hover:border-zinc-700',
+                        ];
+                    };
+                @endphp
+
+                <!-- Geral (accordion) -->
                 <div>
-                    <div class="text-xs font-semibold text-zinc-400 tracking-wide">GERAL</div>
-                    <div class="mt-2 space-y-2">
+                    @php($g = $groupBtn('GERAL', 'general'))
+                    <button type="button"
+                            class="{{ $g['cls'] }}"
+                            @click="open = (open === '{{ $g['key'] }}' ? null : '{{ $g['key'] }}')"
+                            :aria-expanded="open === '{{ $g['key'] }}'">
+                        <span>{{ $g['label'] }}</span>
+                        <svg class="h-4 w-4 text-zinc-500 transition-transform"
+                             :class="open === '{{ $g['key'] }}' ? 'rotate-180' : ''"
+                             viewBox="0 0 20 20" fill="currentColor">
+                            <path fill-rule="evenodd" d="M5.23 7.21a.75.75 0 011.06.02L10 10.94l3.71-3.71a.75.75 0 111.06 1.06l-4.24 4.24a.75.75 0 01-1.06 0L5.21 8.29a.75.75 0 01.02-1.08z" clip-rule="evenodd"/>
+                        </svg>
+                    </button>
+
+                    <div class="mt-2 space-y-2" x-show="open === '{{ $g['key'] }}'" x-collapse>
                         @can('dashboard.view')
                             @php($i = $navItem('Dashboard', route('admin.dashboard', $event), $is('admin.dashboard')))
                             <a href="{{ $i['href'] }}" class="{{ $i['cls'] }}">
@@ -78,13 +126,26 @@
                     </div>
                 </div>
 
-                <!-- Configurações -->
+                <!-- Configurações (accordion) -->
                 @can('system.manage')
                     <div>
-                        <div class="text-xs font-semibold text-zinc-400 tracking-wide">CONFIGURAÇÕES DE SISTEMA</div>
-                        <div class="mt-2 space-y-2">
+                        @php($g = $groupBtn('CONFIGURAÇÕES DE SISTEMA', 'system'))
+                        <button type="button"
+                                class="{{ $g['cls'] }}"
+                                @click="open = (open === '{{ $g['key'] }}' ? null : '{{ $g['key'] }}')"
+                                :aria-expanded="open === '{{ $g['key'] }}'">
+                            <span>{{ $g['label'] }}</span>
+                            <svg class="h-4 w-4 text-zinc-500 transition-transform"
+                                 :class="open === '{{ $g['key'] }}' ? 'rotate-180' : ''"
+                                 viewBox="0 0 20 20" fill="currentColor">
+                                <path fill-rule="evenodd" d="M5.23 7.21a.75.75 0 011.06.02L10 10.94l3.71-3.71a.75.75 0 111.06 1.06l-4.24 4.24a.75.75 0 01-1.06 0L5.21 8.29a.75.75 0 01.02-1.08z" clip-rule="evenodd"/>
+                            </svg>
+                        </button>
+
+                        <div class="mt-2 space-y-2" x-show="open === '{{ $g['key'] }}'" x-collapse>
                             @php($i = $navItem('Configuração do Evento', route('admin.system.event.index', $event), $is('admin.system.event.*')))
                             <a href="{{ $i['href'] }}" class="{{ $i['cls'] }}"><span>{{ $i['label'] }}</span></a>
+
                             @php($i = $navItem('Configuração de categorias', route('admin.system.categories.index', $event), $is('admin.system.categories.*')))
                             <a href="{{ $i['href'] }}" class="{{ $i['cls'] }}"><span>{{ $i['label'] }}</span></a>
 
@@ -93,18 +154,32 @@
 
                             @php($i = $navItem('Cartas de confirmação', route('admin.system.letters.index', $event), $is('admin.system.letters.*')))
                             <a href="{{ $i['href'] }}" class="{{ $i['cls'] }}"><span>{{ $i['label'] }}</span></a>
+
                             @php($i = $navItem('Grupos de Permissões', route('admin.system.roles.index', $event), $is('admin.system.roles.*')))
                             <a href="{{ $i['href'] }}" class="{{ $i['cls'] }}"><span>{{ $i['label'] }}</span></a>
+
                             @php($i = $navItem('Configurações de Credenciais', route('admin.system.credentials.index', $event), $is('admin.system.credentials.*')))
                             <a href="{{ $i['href'] }}" class="{{ $i['cls'] }}"><span>{{ $i['label'] }}</span></a>
                         </div>
                     </div>
                 @endcan
 
-                <!-- Inscrições -->
+                <!-- Inscrições (accordion) -->
                 <div>
-                    <div class="text-xs font-semibold text-zinc-400 tracking-wide">INSCRIÇÕES</div>
-                    <div class="mt-2 space-y-2">
+                    @php($g = $groupBtn('INSCRIÇÕES', 'registrations'))
+                    <button type="button"
+                            class="{{ $g['cls'] }}"
+                            @click="open = (open === '{{ $g['key'] }}' ? null : '{{ $g['key'] }}')"
+                            :aria-expanded="open === '{{ $g['key'] }}'">
+                        <span>{{ $g['label'] }}</span>
+                        <svg class="h-4 w-4 text-zinc-500 transition-transform"
+                             :class="open === '{{ $g['key'] }}' ? 'rotate-180' : ''"
+                             viewBox="0 0 20 20" fill="currentColor">
+                            <path fill-rule="evenodd" d="M5.23 7.21a.75.75 0 011.06.02L10 10.94l3.71-3.71a.75.75 0 111.06 1.06l-4.24 4.24a.75.75 0 01-1.06 0L5.21 8.29a.75.75 0 01.02-1.08z" clip-rule="evenodd"/>
+                        </svg>
+                    </button>
+
+                    <div class="mt-2 space-y-2" x-show="open === '{{ $g['key'] }}'" x-collapse>
                         @can('registrations.view')
                             @php($i = $navItem('Lista de inscritos', route('admin.registrations.index', $event), $is('admin.registrations.*')))
                             <a href="{{ $i['href'] }}" class="{{ $i['cls'] }}"><span>{{ $i['label'] }}</span></a>
@@ -117,21 +192,33 @@
                                 <span>{{ $i['label'] }}</span>
                             </button>
                         @endcan
+
                         @can('registrations.salas')
                             @php($i = $navItem('Lista por sala (presença)', route('admin.attendance.index', $event), $is('admin.attendance.*')))
                             <a href="{{ $i['href'] }}" class="{{ $i['cls'] }}">
                                 <span>{{ $i['label'] }}</span>
                             </a>
                         @endcan
-
                     </div>
                 </div>
 
-                <!-- Estatísticas -->
+                <!-- Estatísticas (accordion) -->
                 @can('stats.view')
                     <div>
-                        <div class="text-xs font-semibold text-zinc-400 tracking-wide">ESTATÍSTICAS</div>
-                        <div class="mt-2 space-y-2">
+                        @php($g = $groupBtn('ESTATÍSTICAS', 'stats'))
+                        <button type="button"
+                                class="{{ $g['cls'] }}"
+                                @click="open = (open === '{{ $g['key'] }}' ? null : '{{ $g['key'] }}')"
+                                :aria-expanded="open === '{{ $g['key'] }}'">
+                            <span>{{ $g['label'] }}</span>
+                            <svg class="h-4 w-4 text-zinc-500 transition-transform"
+                                 :class="open === '{{ $g['key'] }}' ? 'rotate-180' : ''"
+                                 viewBox="0 0 20 20" fill="currentColor">
+                                <path fill-rule="evenodd" d="M5.23 7.21a.75.75 0 011.06.02L10 10.94l3.71-3.71a.75.75 0 111.06 1.06l-4.24 4.24a.75.75 0 01-1.06 0L5.21 8.29a.75.75 0 01.02-1.08z" clip-rule="evenodd"/>
+                            </svg>
+                        </button>
+
+                        <div class="mt-2 space-y-2" x-show="open === '{{ $g['key'] }}'" x-collapse>
                             @php($i = $navItem('Painel de estatísticas', route('admin.stats.index', $event), $is('admin.stats.*')))
                             <a href="{{ $i['href'] }}" class="{{ $i['cls'] }}">
                                 <span>{{ $i['label'] }}</span>
@@ -140,11 +227,23 @@
                     </div>
                 @endcan
 
-                <!-- Usuários -->
+                <!-- Usuários (accordion) -->
                 @can('users.manage')
                     <div>
-                        <div class="text-xs font-semibold text-zinc-400 tracking-wide">USUÁRIOS</div>
-                        <div class="mt-2 space-y-2">
+                        @php($g = $groupBtn('USUÁRIOS', 'users'))
+                        <button type="button"
+                                class="{{ $g['cls'] }}"
+                                @click="open = (open === '{{ $g['key'] }}' ? null : '{{ $g['key'] }}')"
+                                :aria-expanded="open === '{{ $g['key'] }}'">
+                            <span>{{ $g['label'] }}</span>
+                            <svg class="h-4 w-4 text-zinc-500 transition-transform"
+                                 :class="open === '{{ $g['key'] }}' ? 'rotate-180' : ''"
+                                 viewBox="0 0 20 20" fill="currentColor">
+                                <path fill-rule="evenodd" d="M5.23 7.21a.75.75 0 011.06.02L10 10.94l3.71-3.71a.75.75 0 111.06 1.06l-4.24 4.24a.75.75 0 01-1.06 0L5.21 8.29a.75.75 0 01.02-1.08z" clip-rule="evenodd"/>
+                            </svg>
+                        </button>
+
+                        <div class="mt-2 space-y-2" x-show="open === '{{ $g['key'] }}'" x-collapse>
                             @php($i = $navItem('Novo usuário', route('admin.users.create', $event), $is('admin.users.create')))
                             <a href="{{ $i['href'] }}" class="{{ $i['cls'] }}">
                                 <span>{{ $i['label'] }}</span>
@@ -158,11 +257,23 @@
                     </div>
                 @endcan
 
-                <!-- Exportar/Importar -->
+                <!-- Exportar/Importar (accordion) -->
                 @can('sync.manage')
                     <div>
-                        <div class="text-xs font-semibold text-zinc-400 tracking-wide">EXPORTAR / IMPORTAR</div>
-                        <div class="mt-2 space-y-2">
+                        @php($g = $groupBtn('EXPORTAR / IMPORTAR', 'sync'))
+                        <button type="button"
+                                class="{{ $g['cls'] }}"
+                                @click="open = (open === '{{ $g['key'] }}' ? null : '{{ $g['key'] }}')"
+                                :aria-expanded="open === '{{ $g['key'] }}'">
+                            <span>{{ $g['label'] }}</span>
+                            <svg class="h-4 w-4 text-zinc-500 transition-transform"
+                                 :class="open === '{{ $g['key'] }}' ? 'rotate-180' : ''"
+                                 viewBox="0 0 20 20" fill="currentColor">
+                                <path fill-rule="evenodd" d="M5.23 7.21a.75.75 0 011.06.02L10 10.94l3.71-3.71a.75.75 0 111.06 1.06l-4.24 4.24a.75.75 0 01-1.06 0L5.21 8.29a.75.75 0 01.02-1.08z" clip-rule="evenodd"/>
+                            </svg>
+                        </button>
+
+                        <div class="mt-2 space-y-2" x-show="open === '{{ $g['key'] }}'" x-collapse>
                             @php($i = $navItem('Sincronização', route('admin.sync.index', $event), $is('admin.sync.*')))
                             <a href="{{ $i['href'] }}" class="{{ $i['cls'] }}">
                                 <span>{{ $i['label'] }}</span>
@@ -234,7 +345,6 @@
 </script>
 
 {{-- Modal GLOBAL export CSV (categoria + status) --}}
-
 
 <div id="adminGlobalExportModal" class="fixed inset-0 z-[999] hidden">
     <div class="absolute inset-0 bg-black/60" onclick="adminCloseGlobalExport()"></div>
@@ -377,7 +487,6 @@
 
         el.querySelectorAll('input[type="checkbox"]').forEach(cb => cb.checked = false);
     }
-
 
     document.addEventListener('keydown', (e) => {
         if (e.key === 'Escape') adminCloseGlobalExport();
