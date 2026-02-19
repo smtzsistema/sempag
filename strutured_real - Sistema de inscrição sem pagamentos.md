@@ -117,6 +117,8 @@ sempag/
 │  │  └─ StartAssetsSeeder.php
 │  └─ .gitignore
 ├─public/
+│  ├─assets/
+│  │  └─ theme.css
 │  ├─storage/
 │  │  ├─Aqui ficam salvo com o token por evento (demo2025)
 │  │  │  ├─banner/
