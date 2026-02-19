@@ -152,3 +152,28 @@ html:not(.dark) .text-orange-300,
 html:not(.dark) .text-orange-400 {
   color: #b45309 !important; /* amber-700 */
 }
+/* Active nav item (LIGHT THEME) - dar contraste real no selecionado */
+html:not(.dark) a.bg-zinc-900.border-zinc-700.text-zinc-50,
+html:not(.dark) button.bg-zinc-900.border-zinc-700.text-zinc-50 {
+  background-color: #e2e8f0 !important;  /* slate-200 */
+  border-color: #94a3b8 !important;      /* slate-400 */
+  color: #0f172a !important;            /* slate-900 */
+}
+
+/* Se quiser um "tchan" a mais: um risquinho na esquerda */
+html:not(.dark) a.bg-zinc-900.border-zinc-700.text-zinc-50,
+html:not(.dark) button.bg-zinc-900.border-zinc-700.text-zinc-50 {
+  box-shadow: inset 3px 0 0 rgba(16, 185, 129, 0.9); /* emerald-500 vibe */
+}
+
+/* E o hover no light não atropelar o active */
+html:not(.dark) a.bg-zinc-900.border-zinc-700.text-zinc-50:hover,
+html:not(.dark) button.bg-zinc-900.border-zinc-700.text-zinc-50:hover {
+  background-color: #cbd5e1 !important; /* slate-300 */
+}
+
+/* Active nav item - risquinho verde no DARK também (sem mudar o resto) */
+html.dark a.bg-zinc-900.border-zinc-700.text-zinc-50,
+html.dark button.bg-zinc-900.border-zinc-700.text-zinc-50 {
+  box-shadow: inset 3px 0 0 rgba(16, 185, 129, 0.95); /* emerald vibe */
+}
