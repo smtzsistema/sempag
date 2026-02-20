@@ -31,6 +31,9 @@ use App\Http\Controllers\Admin\System\RoleAdminController;
 
 use App\Http\Middleware\AdminEventAuth;
 
+Route::get('/', function () {
+    return response('OK', 200);
+});
 
 // Landing (botões: Nova inscrição / Já sou inscrito)
 Route::get('/e/{event}', [EventPublicController::class, 'landing'])
