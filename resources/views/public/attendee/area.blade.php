@@ -165,6 +165,17 @@
                     {{ $credUi['desc'] ?? 'Abrir credencial' }}
                 </div>
             </a>
+
+            <a href="{{ $certUi['href'] ?? '#' }}"
+               target="_blank"
+               class="block rounded-2xl border p-5 {{ $certUi['class'] ?? 'bg-zinc-950 border-zinc-800' }}"
+               @if(empty($certUi['enabled'])) onclick="return false;" @endif
+            >
+                <div class="text-lg font-semibold">Certificado</div>
+                <div class="text-zinc-400 text-sm mt-1">
+                    {{ $certUi['desc'] ?? 'Abrir e imprimir seu certificado' }}
+                </div>
+            </a>
         </div>
 
         <div class="mt-6">

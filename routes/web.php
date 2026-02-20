@@ -9,6 +9,8 @@ use App\Http\Controllers\Public\AttendeeAuthController;
 use App\Http\Controllers\Public\AttendeeAreaController;
 use App\Http\Controllers\ThemeController;
 use App\Http\Controllers\Public\AttendeeCredentialController;
+use App\Http\Controllers\Public\AttendeeCertificateController;
+
 
 use App\Http\Controllers\Admin\AdminAuthController;
 use App\Http\Controllers\Admin\DashboardController;
@@ -121,6 +123,17 @@ Route::middleware('attendee')->group(function () {
 
     Route::get('/e/{event}/minha-area/credenciais/{credential:cre_id}', [AttendeeCredentialController::class, 'print'])
         ->name('public.attendee.credentials.print');
+
+    //Certificados do inscrito
+    Route::get('/e/{event}/minha-area/certificados', [AttendeeCertificateController::class, 'entry'])
+        ->name('public.attendee.certificate.entry');
+
+    Route::get('/e/{event}/minha-area/certificados/escolher', [AttendeeCertificateController::class, 'choose'])
+        ->name('public.attendee.certificate.choose');
+
+    Route::get('/e/{event}/minha-area/certificados/{cer_id}', [AttendeeCertificateController::class, 'print'])
+        ->whereNumber('cer_id')
+        ->name('public.attendee.certificate.print');
 
 });
 
@@ -366,6 +379,31 @@ Route::prefix('/e/{event}/admin')->name('admin.')->group(function () {
             Route::post('/credenciais/{credential}/excluir', [\App\Http\Controllers\Admin\System\CredentialsAdminController::class, 'destroy'])
                 ->middleware('permission:system.manage')
                 ->name('credentials.destroy');
+
+            // Certificados (módulo)
+            Route::get('/certificados', [\App\Http\Controllers\Admin\System\CertificatesAdminController::class, 'index'])
+                ->middleware('permission:system.manage')
+                ->name('certificates.index');
+
+            Route::get('/certificados/novo', [\App\Http\Controllers\Admin\System\CertificatesAdminController::class, 'create'])
+                ->middleware('permission:system.manage')
+                ->name('certificates.create');
+
+            Route::post('/certificados/novo/a4', [\App\Http\Controllers\Admin\System\CertificatesAdminController::class, 'storeA4'])
+                ->middleware('permission:system.manage')
+                ->name('certificates.storeA4');
+
+            Route::get('/certificados/{certificate}/editar', [\App\Http\Controllers\Admin\System\CertificatesAdminController::class, 'edit'])
+                ->middleware('permission:system.manage')
+                ->name('certificates.edit');
+
+            Route::post('/certificados/{certificate}/editar', [\App\Http\Controllers\Admin\System\CertificatesAdminController::class, 'updateA4'])
+                ->middleware('permission:system.manage')
+                ->name('certificates.update');
+
+            Route::post('/certificados/{certificate}/excluir', [\App\Http\Controllers\Admin\System\CertificatesAdminController::class, 'destroy'])
+                ->middleware('permission:system.manage')
+                ->name('certificates.destroy');
 
 
             Route::prefix('/grupos')->name('roles.')->group(function () {

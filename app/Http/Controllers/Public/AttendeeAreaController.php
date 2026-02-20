@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Event;
 use App\Models\Registration;
 use App\Models\Credential;
+use App\Models\Certificate;
 use App\Support\RegistrationAudit;
 use App\Models\Letter;
 use App\Support\RegistrationPhoto;
@@ -27,7 +28,6 @@ class AttendeeAreaController extends Controller
     public function index(Event $event)
     {
         $registration = $this->currentRegistration($event);
-
         $category = $registration->category;
 
         $status = (string)($registration->ins_aprovado ?? '');
@@ -41,6 +41,11 @@ class AttendeeAreaController extends Controller
 
         $registration->status = $statusLabel;
 
+        $catId = (int)($registration->cat_id ?? 0);
+
+        // -------------------------
+        // CARD CREDENCIAL (igual teu)
+        // -------------------------
         $credUi = [
             'enabled' => false,
             'href' => '#',
@@ -49,16 +54,33 @@ class AttendeeAreaController extends Controller
             'class' => 'bg-zinc-950 border-zinc-800 opacity-70 cursor-not-allowed',
         ];
 
+        // -------------------------
+        // CARD CERTIFICADO (novo)
+        // -------------------------
+        $certUi = [
+            'enabled' => false,
+            'href' => '#',
+            'title' => 'Certificado',
+            'desc' => 'Indisponível.',
+            'class' => 'bg-zinc-950 border-zinc-800 opacity-70 cursor-not-allowed',
+        ];
+
+        // Se não tá aprovado, os DOIS ficam travados e vermelhos
         if ($status !== 'S') {
-            $credUi['enabled'] = false;
-            $credUi['href'] = '#';
-            $credUi['desc'] = "Indisponível: status da inscrição está {$statusLabel}.";
+            $msg = "Indisponível: status da inscrição está {$statusLabel}.";
+
+            $credUi['desc'] = $msg;
             $credUi['class'] = 'bg-red-950/40 border-red-800 text-red-100 opacity-90 cursor-not-allowed';
-            return view('public.attendee.area', compact('event', 'registration', 'credUi', 'category'));
+
+            $certUi['desc'] = $msg;
+            $certUi['class'] = 'bg-red-950/40 border-red-800 text-red-100 opacity-90 cursor-not-allowed';
+
+            return view('public.attendee.area', compact('event', 'registration', 'credUi', 'certUi', 'category'));
         }
 
-        $catId = (int)($registration->cat_id ?? 0);
-
+        // -------------------------
+        // CREDENCIAL: decide fluxo
+        // -------------------------
         $creds = Credential::query()
             ->where('eve_id', $event->eve_id)
             ->where('cre_tipo', 'A4')
@@ -67,27 +89,42 @@ class AttendeeAreaController extends Controller
             ->get();
 
         if ($creds->isEmpty()) {
-            $credUi['enabled'] = false;
-            $credUi['href'] = '#';
             $credUi['desc'] = 'Nenhuma credencial disponível pra sua categoria.';
             $credUi['class'] = 'bg-zinc-950 border-zinc-800 opacity-70 cursor-not-allowed';
-            return view('public.attendee.area', compact('event', 'registration', 'credUi', 'category'));
-        }
-
-        if ($creds->count() === 1) {
+        } elseif ($creds->count() === 1) {
             $credUi['enabled'] = true;
             $credUi['href'] = route('public.attendee.credentials.print', [$event, $creds->first()->cre_id]);
             $credUi['desc'] = 'Abrir e imprimir sua credencial';
             $credUi['class'] = 'bg-zinc-950 border-zinc-800 hover:border-zinc-700 transition';
-            return view('public.attendee.area', compact('event', 'registration', 'credUi', 'category'));
+        } else {
+            $credUi['enabled'] = true;
+            $credUi['href'] = route('public.attendee.credentials.choose', $event);
+            $credUi['desc'] = 'Selecione qual credencial deseja imprimir';
+            $credUi['class'] = 'bg-zinc-950 border-zinc-800 hover:border-zinc-700 transition';
         }
 
-        $credUi['enabled'] = true;
-        $credUi['href'] = route('public.attendee.credentials.choose', $event);
-        $credUi['desc'] = 'Selecione qual credencial deseja imprimir';
-        $credUi['class'] = 'bg-zinc-950 border-zinc-800 hover:border-zinc-700 transition';
+        // -------------------------
+        // CERTIFICADO: decide fluxo
+        // -------------------------
+        $certs = Certificate::query()
+            ->where('eve_id', $event->eve_id)
+            ->where('cer_tipo', 'A4')
+            ->whereJsonContains('cat_id', $catId)
+            ->orderByDesc('cer_id')
+            ->get();
 
-        return view('public.attendee.area', compact('event', 'registration', 'credUi', 'category'));
+        if ($certs->isEmpty()) {
+            $certUi['desc'] = 'Nenhum certificado disponível pra sua categoria.';
+            $certUi['class'] = 'bg-zinc-950 border-zinc-800 opacity-70 cursor-not-allowed';
+        } else {
+            // aqui pode sempre mandar pro entry que resolve 1 vs vários
+            $certUi['enabled'] = true;
+            $certUi['href'] = route('public.attendee.certificate.entry', $event);
+            $certUi['desc'] = 'Abrir e imprimir seu certificado';
+            $certUi['class'] = 'bg-zinc-950 border-zinc-800 hover:border-zinc-700 transition';
+        }
+
+        return view('public.attendee.area', compact('event', 'registration', 'credUi', 'certUi', 'category'));
     }
 
     public function letter(Event $event)

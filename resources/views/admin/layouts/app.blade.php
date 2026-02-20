@@ -160,6 +160,8 @@ if ($is('admin.system.*')) {
 
                             @php($i = $navItem('Configurações de Credenciais', route('admin.system.credentials.index', $event), $is('admin.system.credentials.*')))
                             <a href="{{ $i['href'] }}" class="{{ $i['cls'] }}"><span>{{ $i['label'] }}</span></a>
+                            @php($i = $navItem('Configurações de Certificados', route('admin.system.certificates.index', $event), $is('admin.system.certificates.*')))
+                            <a href="{{ $i['href'] }}" class="{{ $i['cls'] }}"><span>{{ $i['label'] }}</span></a>
                         </div>
                     </div>
                 @endcan
